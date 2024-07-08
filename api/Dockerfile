@@ -2,7 +2,7 @@ FROM golang:1.22-alpine3.20 AS build
 WORKDIR /api
 COPY ./* ./
 RUN go mod download
-RUN go build -o /bin/app ./main.go
+RUN go build -o /bin/app ./cmd/main.go
 
 FROM golang:1.22-alpine3.20 AS debug
 WORKDIR /api

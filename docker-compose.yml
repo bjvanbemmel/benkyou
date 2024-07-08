@@ -10,6 +10,7 @@ services:
       - benkyou
     volumes:
       - ./api/:/api
+    restart: unless-stopped
 
   web:
     build:
@@ -22,6 +23,18 @@ services:
       - benkyou
     volumes:
       - ./web/:/web
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:16
+    ports:
+      - ${POSTGRES_PORT}:5432
+    networks:
+      - benkyou
+    volumes:
+      - ${PERSISTENT_DATA_DIRECTORY:-.data}:/data
+    env_file: .env
+    restart: unless-stopped
 
 networks:
   benkyou:
