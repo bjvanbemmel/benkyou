@@ -3,20 +3,25 @@ services:
     build:
       context: api/
       dockerfile: Dockerfile
-      target: debug
+      target: ${API_BUILD_TARGET:-debug}
+    ports:
+      - ${API_PORT}:80
     networks:
       - benkyou
     volumes:
       - ./api/:/api
 
-  # web:
-  #   build:
-  #     context: web/
-  #     dockerfile: Dockerfile
-  #   networks:
-  #     - benkyou
-  #   volumes:
-  #     - ./web/:/web
+  web:
+    build:
+      context: web/
+      dockerfile: Dockerfile
+      target: ${WEB_BUILD_TARGET:-debug}
+    ports:
+      - ${WEB_PORT}:3000
+    networks:
+      - benkyou
+    volumes:
+      - ./web/:/web
 
 networks:
   benkyou:
