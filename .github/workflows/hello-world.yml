@@ -1,0 +1,13 @@
+name: Hello, World!
+
+on:
+  push:
+
+jobs:
+  say-hello-world:
+    runs-on: self-hosted
+    steps:
+      -
+        name: Hello, World@
+        run: |
+          echo 'Hello, World!'
