@@ -11,4 +11,4 @@ jobs:
       -
         name: Go test
         run: |
-          docker run -v ./:/app golang:1.22-alpine3.20 sh -c 'cd /app && go test -v ./...'
+          docker run --rm -v ./:/app golang:1.22-alpine3.20 sh -c 'cd /app && go test -v ./...'
