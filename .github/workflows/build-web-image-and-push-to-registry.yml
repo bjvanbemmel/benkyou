@@ -33,4 +33,4 @@ jobs:
       -
         name: Run container
         run: |
-          docker run --rm bjvanbemmel/benkyou-web:latest -p ${{ vars.WEB_PORT }}:3000
+          docker run --rm -d -p ${{ vars.WEB_PORT }}:3000 bjvanbemmel/benkyou-web:latest
