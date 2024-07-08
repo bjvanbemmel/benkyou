@@ -35,7 +35,7 @@ jobs:
           tags: bjvanbemmel/benkyou-web:latest
 
   pull-and-run-api-container:
-    needs: Build API and push to registry
+    needs: build-and-push
     runs-on: self-hosted
     steps:
       -
