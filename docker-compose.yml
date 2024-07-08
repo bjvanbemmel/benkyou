@@ -1,0 +1,22 @@
+services:
+  api:
+    build:
+      context: api/
+      dockerfile: Dockerfile
+      target: debug
+    networks:
+      - benkyou
+    volumes:
+      - ./api/:/api
+
+  # web:
+  #   build:
+  #     context: web/
+  #     dockerfile: Dockerfile
+  #   networks:
+  #     - benkyou
+  #   volumes:
+  #     - ./web/:/web
+
+networks:
+  benkyou:
