@@ -1,6 +1,6 @@
 module github.com/bjvanbemmel/benkyou
 
-go 1.22.4
+go 1.22
 
 require (
 	github.com/davecgh/go-spew v1.1.1 // indirect
