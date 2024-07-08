@@ -5,7 +5,7 @@ on:
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
       -
         name: Checkout
@@ -33,4 +33,4 @@ jobs:
       -
         name: Run container
         run: |
-          docker run --rm bjvanbemmel/benkyou-api:latest -p ${{ API_PORT }}:80
+          docker run --rm bjvanbemmel/benkyou-api:latest -p ${{ vars.API_PORT }}:80
