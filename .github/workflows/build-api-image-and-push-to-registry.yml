@@ -26,3 +26,11 @@ jobs:
           context: ./api
           push: true
           tags: bjvanbemmel/benkyou-api:latest
+
+  run-container:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Run container
+        run: |
+          docker run --rm bjvanbemmel/benkyou-api:latest -p ${{ API_PORT }}:80

@@ -26,3 +26,11 @@ jobs:
           context: ./web
           push: true
           tags: bjvanbemmel/benkyou-web:latest
+
+  run-container:
+    runs-on: ubuntu-latest
+    steps:
+      -
+        name: Run container
+        run: |
+          docker run --rm bjvanbemmel/benkyou-web:latest -p ${{ WEB_PORT }}:3000
