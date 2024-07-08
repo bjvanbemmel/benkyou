@@ -1,0 +1,14 @@
+name: Run API unit tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  go-test:
+    runs-on: self-hosted
+    steps:
+      -
+        name: Go test
+        run: |
+          go test -v ./...
