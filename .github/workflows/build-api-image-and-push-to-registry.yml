@@ -1,4 +1,4 @@
-name: Build API image and push to registry
+name: Build images and push to registry
 
 on:
   push:
@@ -20,17 +20,34 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
-        name: Build and push
+        name: Build API and push to registry
         uses: docker/build-push-action@v6
         with:
           context: ./api
           push: true
           tags: bjvanbemmel/benkyou-api:latest
+      -
+        name: Build web and push to registry
+        uses: docker/build-push-action@v6
+        with:
+          context: ./web
+          push: true
+          tags: bjvanbemmel/benkyou-web:latest
 
-  run-container:
-    runs-on: ubuntu-latest
+  pull-and-run-api-container:
+    needs: Build API and push to registry
+    runs-on: self-hosted
     steps:
       -
         name: Run container
         run: |
           docker run --rm -d -p ${{ vars.API_PORT }}:80 bjvanbemmel/benkyou-api:latest
+
+  pull-and-run-web-container:
+    needs: pull-and-run-api-container
+    runs-on: self-hosted
+    steps:
+      -
+        name: Run container
+        run: |
+          docker run --rm -d -p ${{ vars.WEB_PORT }}:80 bjvanbemmel/benkyou-web:latest
