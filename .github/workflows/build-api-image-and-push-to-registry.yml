@@ -3,6 +3,10 @@ name: Build images and push to registry
 on:
   push:
 
+env:
+  API_PORT: 9999
+  WEB_PORT: 8888
+
 jobs:
   build-and-push:
     runs-on: self-hosted
@@ -41,7 +45,7 @@ jobs:
       -
         name: Run container
         run: |
-          docker run --rm -d -p ${{ vars.API_PORT }}:80 bjvanbemmel/benkyou-api:latest
+          docker run --rm -d -p $API_PORT:80 bjvanbemmel/benkyou-api:latest
 
   pull-and-run-web-container:
     needs: pull-and-run-api-container
@@ -50,4 +54,4 @@ jobs:
       -
         name: Run container
         run: |
-          docker run --rm -d -p ${{ vars.WEB_PORT }}:80 bjvanbemmel/benkyou-web:latest
+          docker run --rm -d -p $WEB_PORT:3000 bjvanbemmel/benkyou-web:latest
