@@ -7,5 +7,5 @@ import (
 )
 
 func TestShouldEqualTrue(t *testing.T) {
-  assert.True(t, true)
+  assert.True(t, false)
 }
