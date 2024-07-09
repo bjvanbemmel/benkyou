@@ -2,7 +2,6 @@ name: Run API unit tests
 
 on:
   push:
-  pull_request:
 
 jobs:
   go-test:
