@@ -32,12 +32,16 @@ func (u UserRepository) CloseConn() error {
 	return u.conn.Conn().Close(u.ctx)
 }
 
-func (u UserRepository) Index() ([]data.User, error) {
+func (u UserRepository) Index() ([]data.ListUsersRow, error) {
 	return u.queries.ListUsers(u.ctx)
 }
 
-func (u UserRepository) Get(id uuid.UUID) (data.User, error) {
+func (u UserRepository) Get(id uuid.UUID) (data.GetUserRow, error) {
 	return u.queries.GetUser(u.ctx, id)
+}
+
+func (u UserRepository) GetWithPassword(id uuid.UUID) (data.User, error) {
+	return u.queries.GetUserWithPassword(u.ctx, id)
 }
 
 func (u UserRepository) Create(user data.CreateUserParams) (data.User, error) {

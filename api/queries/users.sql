@@ -1,9 +1,13 @@
 -- name: GetUser :one
+SELECT id, email, username, created_at, updated_at FROM users
+WHERE id = $1 LIMIT 1;
+
+-- name: GetUserWithPassword :one
 SELECT * FROM users
 WHERE id = $1 LIMIT 1;
 
 -- name: ListUsers :many
-SELECT * FROM users;
+SELECT id, email, username, created_at, updated_at FROM users;
 
 -- name: CreateUser :one
 INSERT INTO users (
