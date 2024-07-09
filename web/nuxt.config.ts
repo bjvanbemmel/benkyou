@@ -5,6 +5,13 @@ export default defineNuxtConfig({
     enabled: true
   },
   modules: [ '@nuxt/eslint', '@element-plus/nuxt', "@nuxtjs/tailwindcss" ],
+  app: {
+    head: {
+      htmlAttrs: {
+        class: 'dark',
+      },
+    },
+  },
   eslint: {},
   elementPlus: {
     themes: [ 'dark' ],
