@@ -76,10 +76,10 @@ const form: Partial<RuleForm> = reactive<RuleForm>({
 
 const rules: Partial<FormRules<RuleForm>> = reactive<FormRules<RuleForm>>({
   username: [
-    { required: true, message: 'Please enter your username', trigger: 'change', },
+    { required: true, message: 'Please enter your username', trigger: 'blur', },
   ],
   password: [
-    { required: true, message: 'Please enter your password', trigger: 'change', },
+    { required: true, message: 'Please enter your password', trigger: 'blur', },
   ],
 })
 
