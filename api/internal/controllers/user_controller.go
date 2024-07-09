@@ -37,7 +37,7 @@ func (u UserController) Get(w http.ResponseWriter, r *http.Request) {
 
 	user, err := u.repository.Get(id)
 	if err != nil {
-		response.NewError(w, http.StatusInternalServerError, err)
+		response.NewError(w, http.StatusNotFound, err)
 		return
 	}
 
@@ -93,4 +93,6 @@ func (u UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	if err := u.repository.Delete(id); err != nil {
 		response.NewError(w, http.StatusInternalServerError, err)
 	}
+
+	response.New(w, http.StatusOK, "")
 }
