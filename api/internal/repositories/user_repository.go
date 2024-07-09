@@ -48,11 +48,11 @@ func (u UserRepository) GetUserWithPasswordByUsername(username string) (data.Use
 	return u.queries.GetUserWithPasswordByUsername(u.ctx, username)
 }
 
-func (u UserRepository) Create(user data.CreateUserParams) (data.User, error) {
+func (u UserRepository) Create(user data.CreateUserParams) (data.CreateUserRow, error) {
 	return u.queries.CreateUser(u.ctx, user)
 }
 
-func (u UserRepository) Update(user data.UpdateUserParams) (data.User, error) {
+func (u UserRepository) Update(user data.UpdateUserParams) (data.UpdateUserRow, error) {
 	return u.queries.UpdateUser(u.ctx, user)
 }
 

@@ -23,7 +23,7 @@ INSERT INTO users (
   $2,
   $3
 )
-RETURNING *;
+RETURNING email, username, created_at, updated_at;
 
 -- name: UpdateUser :one
 UPDATE users set
@@ -32,7 +32,7 @@ UPDATE users set
   password = $4,
   updated_at = now()
 WHERE id = $1
-RETURNING *;
+RETURNING email, username, updated_at, created_at;
 
 -- name: DeleteUser :exec
 DELETE FROM users

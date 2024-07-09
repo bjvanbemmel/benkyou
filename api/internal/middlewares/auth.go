@@ -3,7 +3,6 @@ package middlewares
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
@@ -41,12 +40,6 @@ func Auth(next http.Handler) http.Handler {
 				return
 			}
 			response.NewError(w, http.StatusUnauthorized, errors.New("token has expired"))
-			return
-		}
-
-		fmt.Println(r.URL.Path)
-		if r.URL.Path == "/auth/login" {
-			response.New(w, http.StatusOK, "already authenticated")
 			return
 		}
 
