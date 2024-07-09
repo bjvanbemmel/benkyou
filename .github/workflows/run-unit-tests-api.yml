@@ -11,6 +11,10 @@ jobs:
         name: Checkout
         uses: actions/checkout@v4
       -
+        name: Generate SQLC models
+        run: |
+          docker run --rm -v ./api:/src -w /src sqlc/sqlc generate
+      -
         name: Go test
         run: |
           docker run --rm -v ./api:/app golang:1.22-alpine3.20 sh -c 'cd /app && go test -v ./...'
