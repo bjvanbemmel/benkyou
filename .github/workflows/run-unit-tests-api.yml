@@ -13,7 +13,7 @@ jobs:
       -
         name: Generate SQLC models
         run: |
-          docker run --rm -v ./api:/src -w /src sqlc/sqlc generate
+          docker run --rm --user 1000 -v ./api:/src -w /src sqlc/sqlc generate
       -
         name: Go test
         run: |
