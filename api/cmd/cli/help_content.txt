@@ -1,0 +1,5 @@
+ Usage: benkyou [OPTIONS] COMMAND
+
+ Available commands:
+  migrate [up|down|status]        manage migrations
+  help                            get help
