@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/bjvanbemmel/benkyou/data"
+	"github.com/bjvanbemmel/benkyou/internal/data"
 	"github.com/bjvanbemmel/benkyou/internal/repositories"
 	"github.com/bjvanbemmel/benkyou/internal/requests"
 	"github.com/bjvanbemmel/benkyou/internal/response"

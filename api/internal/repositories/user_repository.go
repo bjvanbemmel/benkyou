@@ -3,7 +3,7 @@ package repositories
 import (
 	"context"
 
-	"github.com/bjvanbemmel/benkyou/data"
+	"github.com/bjvanbemmel/benkyou/internal/data"
 	"github.com/bjvanbemmel/benkyou/internal/database"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
