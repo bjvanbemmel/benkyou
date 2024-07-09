@@ -21,7 +21,8 @@ RETURNING *;
 UPDATE tokens set
   user_id = $2,
   value = $3,
-  expires_at = $4
+  expires_at = $4,
+  updated_at = now()
 WHERE id = $1
 RETURNING *;
 

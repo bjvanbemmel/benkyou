@@ -3,8 +3,8 @@
 CREATE TABLE tokens (
   id uuid DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
-  value VARCHAR(255) NOT NULL,
-  expires_at BIGINT NOT NULL,
+  value VARCHAR(255) UNIQUE NOT NULL,
+  expires_at TIMESTAMP NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT now(),
   updated_at TIMESTAMP,
   PRIMARY KEY (id),

@@ -9,3 +9,10 @@ sql:
         package: "data"
         out: "data"
         sql_package: "pgx/v5"
+
+overrides:
+  go:
+    overrides:
+      - db_type: "uuid"
+        engine: "postgresql"
+        go_type: "github.com/google/uuid.UUID"

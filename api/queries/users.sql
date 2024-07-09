@@ -21,7 +21,8 @@ RETURNING *;
 UPDATE users set
   email = $2,
   username = $3,
-  password = $4
+  password = $4,
+  updated_at = now()
 WHERE id = $1
 RETURNING *;
 

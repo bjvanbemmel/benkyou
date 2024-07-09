@@ -30,7 +30,8 @@ func (c CommandMigrate) Execute(w io.ReadWriter, args ...string) error {
 
 	godotenv.Load("../../../.env")
 	conn := fmt.Sprintf(
-		"host=localhost port=%s user=%s password=%s dbname=%s sslmode=disable",
+		"host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		os.Getenv("POSTGRES_HOST"),
 		os.Getenv("POSTGRES_PORT"),
 		os.Getenv("POSTGRES_USER"),
 		os.Getenv("POSTGRES_PASSWORD"),
