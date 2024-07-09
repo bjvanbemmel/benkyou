@@ -1,18 +1,18 @@
-FROM node:22-alpine3.20 AS build
-WORKDIR /web
-RUN apk update && apk upgrade
-RUN apk add git
-COPY . /web
+FROM node:20-slim AS build
+WORKDIR /build
+COPY package.json package-lock.json ./
 RUN npm install
+COPY . .
 RUN npm run build
+RUN npm prune
 
-FROM node:22-alpine3.20 AS release
-WORKDIR /web
-COPY --from=build /web/.output ./
+FROM node:20-slim AS release
+COPY --from=build /build/.output /release/.output
 EXPOSE 3000
-CMD [ "node", ".output/server/index.mjs" ]
+WORKDIR /release
+CMD [ "node", "./.output/server/index.mjs" ]
 
-FROM node:22-alpine3.20 AS debug
+FROM node:20-slim AS debug
 WORKDIR /web
 COPY . /web
 EXPOSE 3000
