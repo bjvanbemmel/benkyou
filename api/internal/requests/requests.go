@@ -48,3 +48,9 @@ type UserCreateRequest struct {
 	Password        string `json:"password" validate:"required,min=8,max=255"`
 	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
 }
+
+// POST /auth/login
+type AuthLoginRequest struct {
+	Username string `json:"username" validate:"required"`
+	Password string `json:"password" validate:"required"`
+}

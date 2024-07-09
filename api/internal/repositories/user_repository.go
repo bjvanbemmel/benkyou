@@ -44,6 +44,10 @@ func (u UserRepository) GetWithPassword(id uuid.UUID) (data.User, error) {
 	return u.queries.GetUserWithPassword(u.ctx, id)
 }
 
+func (u UserRepository) GetUserWithPasswordByUsername(username string) (data.User, error) {
+	return u.queries.GetUserWithPasswordByUsername(u.ctx, username)
+}
+
 func (u UserRepository) Create(user data.CreateUserParams) (data.User, error) {
 	return u.queries.CreateUser(u.ctx, user)
 }

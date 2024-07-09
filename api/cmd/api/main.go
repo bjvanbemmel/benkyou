@@ -26,15 +26,30 @@ func main() {
 
 	userController := controllers.NewUserController(userRepository)
 
-	r.Get("/users", userController.Index)
+	tokenRepository, err := repositories.NewTokenRepository(context.Background())
+	if err != nil {
+		panic(err)
+	}
+
+	authController := controllers.NewAuthController(userRepository, tokenRepository)
+
 	r.Post("/users", userController.Create)
 
-	r.Route("/users/{id}", func(r chi.Router) {
-		r.Use(middlewares.Uuid)
-		r.Get("/", userController.Get)
-		r.Put("/", userController.Update)
-		r.Delete("/", userController.Delete)
+	// Protected routes
+	r.Group(func(r chi.Router) {
+		r.Use(middlewares.Auth)
+		r.Get("/users", userController.Index)
+		r.Route("/users/{id}", func(r chi.Router) {
+			r.Use(middlewares.Uuid)
+			r.Get("/", userController.Get)
+			r.Put("/", userController.Update)
+			r.Delete("/", userController.Delete)
+		})
+
+		r.Post("/auth/logout", authController.Login)
 	})
+
+	r.Post("/auth/login", authController.Login)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello, World!"))

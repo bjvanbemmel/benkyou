@@ -2,6 +2,14 @@
 SELECT * FROM tokens
 WHERE id = $1 LIMIT 1;
 
+-- name: GetTokenByValue :one
+SELECT * FROM tokens
+WHERE value = $1 LIMIT 1;
+
+-- name: GetTokenByUserID :one
+SELECT * FROM tokens
+WHERE user_id = $1 LIMIT 1;
+
 -- name: ListTokens :many
 SELECT * FROM tokens;
 

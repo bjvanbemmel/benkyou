@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"crypto/sha256"
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -66,6 +67,12 @@ func (u UserController) Create(w http.ResponseWriter, r *http.Request) {
 
 func (u UserController) Update(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("uuid").(uuid.UUID)
+	token := r.Context().Value("token").(data.Token)
+
+	if token.UserID != id {
+		response.NewError(w, http.StatusUnauthorized, errors.New("you are not authorized to edit this user"))
+		return
+	}
 
 	req, err := requests.Validate[requests.UserUpdateRequest](r)
 	if err != nil {
@@ -89,6 +96,12 @@ func (u UserController) Update(w http.ResponseWriter, r *http.Request) {
 
 func (u UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("uuid").(uuid.UUID)
+	token := r.Context().Value("token").(data.Token)
+
+	if token.UserID != id {
+		response.NewError(w, http.StatusUnauthorized, errors.New("you are not authorized to delete this user"))
+		return
+	}
 
 	if err := u.repository.Delete(id); err != nil {
 		response.NewError(w, http.StatusInternalServerError, err)

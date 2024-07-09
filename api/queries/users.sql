@@ -6,6 +6,10 @@ WHERE id = $1 LIMIT 1;
 SELECT * FROM users
 WHERE id = $1 LIMIT 1;
 
+-- name: GetUserWithPasswordByUsername :one
+SELECT * FROM users
+WHERE username = $1 LIMIT 1;
+
 -- name: ListUsers :many
 SELECT id, email, username, created_at, updated_at FROM users;
 
