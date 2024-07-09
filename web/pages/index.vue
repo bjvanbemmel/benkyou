@@ -1,9 +1,3 @@
 <template>
-  <ElContainer>
-    <ElMain>
-        <ElButton>
-          Hello, World!
-        </ElButton>
-    </ElMain>
-  </ElContainer>
+  <h1>Hello, World!</h1>
 </template>
