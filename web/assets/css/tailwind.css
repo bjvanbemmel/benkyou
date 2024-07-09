@@ -5,3 +5,7 @@
 html, body {
   @apply h-screen
 }
+
+body {
+  @apply dark:bg-zinc-900 bg-zinc-50
+}

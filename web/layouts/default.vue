@@ -1,9 +1,9 @@
 <template>
-  <ElContainer class="h-screen">
-    <ElHeader />
-    <ElMain>
+  <el-container class="h-screen">
+    <el-header />
+    <el-main>
         <slot />
-    </ElMain>
-    <ElFooter />
-  </ElContainer>
+    </el-main>
+    <el-footer />
+  </el-container>
 </template>
