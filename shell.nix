@@ -7,6 +7,8 @@ pkgs.mkShell {
     go
     air
     nodejs
+    goose
+    sqlc
   ];
 
   shellHook = ''

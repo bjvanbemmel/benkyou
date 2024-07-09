@@ -5,6 +5,8 @@ CREATE TABLE tokens (
   user_id uuid NOT NULL,
   value VARCHAR(255) NOT NULL,
   expires_at BIGINT NOT NULL,
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP,
   PRIMARY KEY (id),
   CONSTRAINT fk_user
     FOREIGN KEY(user_id)
