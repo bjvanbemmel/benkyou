@@ -33,12 +33,7 @@ func (u UserRepository) CloseConn() error {
 }
 
 func (u UserRepository) Index() ([]data.User, error) {
-	users, err := u.queries.ListUsers(u.ctx)
-	if users == nil {
-		users = []data.User{}
-	}
-
-	return users, err
+	return u.queries.ListUsers(u.ctx)
 }
 
 func (u UserRepository) Get(id uuid.UUID) (data.User, error) {
