@@ -4,8 +4,9 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true
   },
-  modules: [
-    '@nuxt/eslint'
-  ],
-  eslint: {}
+  modules: [ '@nuxt/eslint', '@element-plus/nuxt', "@nuxtjs/tailwindcss" ],
+  eslint: {},
+  elementPlus: {
+    themes: [ 'dark' ],
+  },
 })
