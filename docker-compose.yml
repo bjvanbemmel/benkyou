@@ -28,7 +28,7 @@ services:
   postgres:
     image: postgres:16
     ports:
-      - ${POSTGRES_PORT}:5432
+      - 127.0.0.1:${POSTGRES_PORT}:5432
     networks:
       - benkyou
     volumes:
