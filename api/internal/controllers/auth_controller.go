@@ -65,6 +65,18 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 	response.New(w, http.StatusOK, token)
 }
 
+func (a AuthController) Identity(w http.ResponseWriter, r *http.Request) {
+	token := r.Context().Value("token").(data.Token)
+
+	user, err := a.userRepository.Get(token.UserID)
+	if err != nil {
+		response.NewError(w, http.StatusInternalServerError, err)
+		return
+	}
+
+	response.New(w, http.StatusOK, user)
+}
+
 func (a AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 	token := r.Context().Value("token").(data.Token)
 

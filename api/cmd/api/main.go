@@ -10,6 +10,7 @@ import (
 	"github.com/bjvanbemmel/benkyou/internal/repositories"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"github.com/go-chi/cors"
 )
 
 func main() {
@@ -18,6 +19,12 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(time.Second * 60))
+	r.Use(cors.Handler((cors.Options{
+		AllowedOrigins: []string{"https://*", "http://*"},
+		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
+		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
+		MaxAge:         300,
+	})))
 
 	userRepository, err := repositories.NewUserRepository(context.Background())
 	if err != nil {
@@ -47,6 +54,7 @@ func main() {
 		})
 
 		r.Post("/auth/logout", authController.Login)
+		r.Get("/auth/identity", authController.Identity)
 	})
 
 	r.Post("/auth/login", authController.Login)

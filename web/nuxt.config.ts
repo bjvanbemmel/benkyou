@@ -5,6 +5,12 @@ export default defineNuxtConfig({
     enabled: true
   },
   modules: [ '@nuxt/eslint', '@element-plus/nuxt', "@nuxtjs/tailwindcss" ],
+  runtimeConfig: {
+    public: {
+      baseURL: process.env.CLIENT_BASE_URL,
+    },
+    baseURL: process.env.SERVER_BASE_URL,
+  },
   app: {
     head: {
       htmlAttrs: {

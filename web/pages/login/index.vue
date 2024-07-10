@@ -15,7 +15,7 @@
               status-icon
               label-width="auto"
               class="flex flex-col p-12"
-              @keyup.enter="validateForm(formRef)"
+              @keyup.enter="submitForm(formRef)"
             >
               <el-form-item label="Username" prop="username">
                 <el-input
@@ -36,7 +36,7 @@
                 <el-button
                   type="primary"
                   class="mt-4 ml-auto"
-                  @click="validateForm(formRef)"
+                  @click="submitForm(formRef)"
                 >
                   Login
                 </el-button>
@@ -83,10 +83,32 @@ const rules: Partial<FormRules<RuleForm>> = reactive<FormRules<RuleForm>>({
   ],
 })
 
-const validateForm = async (formEl: FormInstance | undefined) => {
+async function getToken(): Promise<Error | null> {
+  const { data: data, error: error } = await useFetchApi<Response<Token>>('auth/login', {
+    method: 'POST',
+    body: {
+      username: form.username,
+      password: form.password,
+    },
+  })
+
+  const token = useCookie('token')
+  token.value = data.value?.data.value
+
+  return error.value
+}
+
+const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
-  await formEl.validate((valid, _) => {
-    if (!valid) console.log('sadge')
+
+  await formEl.validate(async (valid, _) => {
+    if (!valid) return;
+
+    if (await getToken() !== null) return; // TODO: Add visual feedback
+
+    navigateTo('/', {
+      external: true,
+    })
   })
 }
 </script>

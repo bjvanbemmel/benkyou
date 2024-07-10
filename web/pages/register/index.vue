@@ -12,7 +12,7 @@
               status-icon
               label-width="auto"
               class="flex flex-col p-12"
-              @keyup.enter="validateForm(formRef)"
+              @keyup.enter="submitForm(formRef)"
             >
               <el-form-item label="E-mail" prop="email">
                 <el-input
@@ -48,7 +48,8 @@
                 <el-button
                   type="primary"
                   class="mt-4 ml-auto"
-                  @click="validateForm(formRef)"
+                  :disabled="disableSubmit"
+                  @click="submitForm(formRef)"
                 >
                   Create account
                 </el-button>
@@ -83,15 +84,15 @@ interface RuleForm {
 }
 
 const formSize: Ref = ref<ComponentSize>('default')
-
 const formRef: Ref = ref<FormInstance>()
-
 const form: Partial<RuleForm> = reactive<RuleForm>({
   email: '',
   username: '',
   password: '',
   confirmPassword: '',
 })
+
+const disableSubmit: Ref<boolean> = ref(false);
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const validatePasswords = (_: any, value: string, callback: any) => {
@@ -116,10 +117,51 @@ const rules: Partial<FormRules<RuleForm>> = reactive<FormRules<RuleForm>>({
   ],
 })
 
-const validateForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
-  await formEl.validate((valid, _) => {
-    if (!valid) console.log('sadge')
+const submitForm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) {
+    return;
+  }
+
+  await formEl.validate(async (valid, _) => {
+    if (!valid) {
+      return;
+    }
+
+    if (await createUser() !== null) return; // TODO: Add visual feedback
+    if (await getToken() !== null) return; // TODO: Add visual feedback
+
+    navigateTo('/', {
+      external: true,
+    })
   })
+}
+
+async function createUser(): Promise<Error | null> {
+  const { error: error } = await useFetchApi<Response<User>>('users', {
+    method: 'POST',
+    body: {
+      username: form.username,
+      email: form.email,
+      password: form.password,
+      confirm_password: form.confirmPassword,
+    },
+  })
+
+  return error.value
+}
+
+async function getToken(): Promise<Error | null> {
+  const { data: data, error: error } = await useFetchApi<Response<Token>>('auth/login', {
+    method: 'POST',
+    body: {
+      username: form.username,
+      password: form.password,
+    },
+  })
+
+  const token = useCookie('token')
+  token.value = data.value?.data.value
+
+  return error.value
 }
 </script>
