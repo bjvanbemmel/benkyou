@@ -78,6 +78,9 @@
 import { reactive, ref, type Ref } from 'vue'
 import type { FormInstance, ComponentSize, FormRules } from 'element-plus'
 import { NuxtLink } from '#components'
+import { match, P } from 'ts-pattern';
+
+const { $fetchApi } = useNuxtApp()
 
 interface RuleForm {
   email: string,
@@ -133,7 +136,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       return
     }
 
-    if (await createUser() !== null) {
+    const err = await createUser()
+    if (err !== null) {
       formError.value = new Error('Something went wrong while registering your account')
       formEl.resetFields([ 'password', 'confirmPassword' ])
 
@@ -153,8 +157,8 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   })
 }
 
-async function createUser(): Promise<Error | null> {
-  const { error: error } = await useFetchApi<Response<User>>('users', {
+async function createUser(): Promise<ErrorResponse | null> {
+  const data: Response<User> | ErrorResponse = await $fetchApi<Response<User>>('users', {
     method: 'POST',
     body: {
       username: form.username,
@@ -162,23 +166,35 @@ async function createUser(): Promise<Error | null> {
       password: form.password,
       confirm_password: form.confirmPassword,
     },
-  })
+  }).catch(e => e.data)
 
-  return error.value
+  const _user = match(data)
+    .with({ data: P.not(undefined) }, () => data as Response<User>)
+    .otherwise(() => undefined)
+
+  if (typeof _user === 'undefined') return data as ErrorResponse
+
+  return null
 }
 
-async function getToken(): Promise<Error | null> {
-  const { data: data, error: error } = await useFetchApi<Response<Token>>('auth/login', {
+async function getToken(): Promise<ErrorResponse | null> {
+  const data: Response<Token> | ErrorResponse = await $fetchApi<Response<Token>>('auth/login', {
     method: 'POST',
     body: {
       username: form.username,
       password: form.password,
     },
-  })
+  }).catch(e => e.data)
+
+  const _token = match(data)
+    .with({ data: P.not(undefined) }, () => data as Response<Token>)
+    .otherwise(() => undefined)
+
+  if (typeof _token === 'undefined') return data as ErrorResponse
 
   const token = useCookie('token')
-  token.value = data.value?.data.value
+  token.value = _token.data.value
 
-  return error.value
+  return null
 }
 </script>

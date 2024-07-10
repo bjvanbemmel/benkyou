@@ -60,8 +60,11 @@
 
 <script setup lang="ts">
 import { reactive, ref, type Ref } from 'vue'
+import { match, P } from 'ts-pattern'
 import type { FormInstance, ComponentSize, FormRules } from 'element-plus'
 import { NuxtLink } from '#components'
+
+const { $fetchApi } = useNuxtApp()
 
 interface RuleForm {
   username: string,
@@ -85,19 +88,25 @@ const rules: Partial<FormRules<RuleForm>> = reactive<FormRules<RuleForm>>({
   ],
 })
 
-async function getToken(): Promise<Error | null> {
-  const { data: data, error: error } = await useFetchApi<Response<Token>>('auth/login', {
+async function getToken(): Promise<ErrorResponse | null> {
+  const data: Response<Token> | ErrorResponse = await $fetchApi<Response<Token>>('auth/login', {
     method: 'POST',
     body: {
       username: form.username,
       password: form.password,
     },
-  })
+  }).catch(e => e.data)
+
+  const _token = match(data)
+    .with({ data: P.not(undefined) }, () => data as Response<Token>)
+    .otherwise(() => undefined)
+
+  if (typeof _token === 'undefined') return data as ErrorResponse
 
   const token = useCookie('token')
-  token.value = data.value?.data.value
+  token.value = _token.data.value
 
-  return error.value
+  return null
 }
 
 const submitForm = async (formEl: FormInstance | undefined) => {
@@ -109,10 +118,10 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     if (!valid) return
 
     const error = await getToken();
-    if (error !== null) {
-      formError.value = new Error('Invalid login details')
-      formEl.resetFields([ 'password' ])
 
+    if (error !== null) {
+      formError.value = new Error('Invalid login credentials')
+      formEl.resetFields([ 'password' ])
       return
     }
 
