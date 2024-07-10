@@ -17,6 +17,9 @@
               class="flex flex-col p-12"
               @keyup.enter="submitForm(formRef)"
             >
+              <el-form-item>
+                <el-alert v-if="formError" :title="formError.message" type="error" />
+              </el-form-item>
               <el-form-item label="Username" prop="username">
                 <el-input
                   v-model="form.username"
@@ -66,9 +69,8 @@ interface RuleForm {
 }
 
 const formSize: Ref = ref<ComponentSize>('default')
-
 const formRef: Ref = ref<FormInstance>()
-
+const formError: Ref = ref<Error | null>(null)
 const form: Partial<RuleForm> = reactive<RuleForm>({
   username: '',
   password: '',
@@ -99,12 +101,20 @@ async function getToken(): Promise<Error | null> {
 }
 
 const submitForm = async (formEl: FormInstance | undefined) => {
-  if (!formEl) return;
+  if (!formEl) return
+
+  formError.value = null
 
   await formEl.validate(async (valid, _) => {
-    if (!valid) return;
+    if (!valid) return
 
-    if (await getToken() !== null) return; // TODO: Add visual feedback
+    const error = await getToken();
+    if (error !== null) {
+      formError.value = new Error('Invalid login details')
+      formEl.resetFields([ 'password' ])
+
+      return
+    }
 
     navigateTo('/', {
       external: true,

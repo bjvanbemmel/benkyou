@@ -14,6 +14,9 @@
               class="flex flex-col p-12"
               @keyup.enter="submitForm(formRef)"
             >
+              <el-form-item>
+                <el-alert v-if="formError" :title="formError.message" type="error" />
+              </el-form-item>
               <el-form-item label="E-mail" prop="email">
                 <el-input
                   v-model="form.email"
@@ -85,6 +88,7 @@ interface RuleForm {
 
 const formSize: Ref = ref<ComponentSize>('default')
 const formRef: Ref = ref<FormInstance>()
+const formError: Ref<Error | null> = ref(null)
 const form: Partial<RuleForm> = reactive<RuleForm>({
   email: '',
   username: '',
@@ -119,16 +123,29 @@ const rules: Partial<FormRules<RuleForm>> = reactive<FormRules<RuleForm>>({
 
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) {
-    return;
+    return
   }
+
+  formError.value = null
 
   await formEl.validate(async (valid, _) => {
     if (!valid) {
-      return;
+      return
     }
 
-    if (await createUser() !== null) return; // TODO: Add visual feedback
-    if (await getToken() !== null) return; // TODO: Add visual feedback
+    if (await createUser() !== null) {
+      formError.value = new Error('Something went wrong while registering your account')
+      formEl.resetFields([ 'password', 'confirmPassword' ])
+
+      return
+    }
+
+    if (await getToken() !== null) {
+      formError.value = new Error('Something went wrong while registering your account')
+      formEl.resetFields([ 'password', 'confirmPassword' ])
+
+      return
+    }
 
     navigateTo('/', {
       external: true,
