@@ -53,7 +53,7 @@ func main() {
 			r.Delete("/", userController.Delete)
 		})
 
-		r.Post("/auth/logout", authController.Login)
+		r.Post("/auth/logout", authController.Logout)
 		r.Get("/auth/identity", authController.Identity)
 	})
 
