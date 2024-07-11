@@ -11,7 +11,7 @@
               :size="formSize"
               status-icon
               label-width="auto"
-              class="flex flex-col p-12"
+              class="flex gap-4 flex-col p-12"
               @keyup.enter="submitForm(formRef)"
             >
               <el-form-item>
@@ -111,16 +111,37 @@ const validatePasswords = (_: any, value: string, callback: any) => {
 
 const rules: Partial<FormRules<RuleForm>> = reactive<FormRules<RuleForm>>({
   email: [
-    { required: true, type: 'email', message: 'Please enter a valid e-mail address', trigger: 'blur', },
+    {
+      required: true,
+      type: 'email',
+      message: 'Please enter a valid e-mail address',
+      trigger: 'blur',
+    },
   ],
   username: [
-    { required: true, message: 'Please enter your username', trigger: 'blur', },
+    {
+      required: true,
+      min: 3,
+      max: 30,
+      message: 'A valid username must be between 3 and 30 characters long',
+      trigger: 'blur',
+    },
   ],
   password: [
-    { required: true, message: 'Please enter your password', trigger: 'blur', },
+    {
+      required: true,
+      min: 8,
+      max: 255,
+      message: 'A valid password must be between 8 and 255 characters long',
+      trigger: 'blur',
+    },
   ],
   confirmPassword: [
-    { required: true, validator: validatePasswords, trigger: 'blur', },
+    {
+      required: true,
+      validator: validatePasswords,
+      trigger: 'blur',
+    },
   ],
 })
 

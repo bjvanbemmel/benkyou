@@ -14,7 +14,7 @@
               :size="formSize"
               status-icon
               label-width="auto"
-              class="flex flex-col p-12"
+              class="flex gap-4 flex-col p-12"
               @keyup.enter="submitForm(formRef)"
             >
               <el-form-item>
