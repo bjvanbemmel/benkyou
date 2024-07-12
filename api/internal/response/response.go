@@ -34,7 +34,7 @@ func New[T any](w http.ResponseWriter, status int, object T) {
 }
 
 func NewError(w http.ResponseWriter, status int, err error) {
-	if target == "release" {
+	if status == http.StatusInternalServerError && target == "release" {
 		err = errors.ErrSomethingWentWrong
 	}
 

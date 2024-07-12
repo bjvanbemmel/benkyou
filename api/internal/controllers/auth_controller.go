@@ -34,7 +34,7 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 
 	user, err := a.userRepository.GetUserWithPasswordByUsername(req.Username)
 	if err != nil {
-		response.NewError(w, http.StatusNotFound, errors.ErrInvalidCredentials)
+		response.NewError(w, http.StatusUnauthorized, errors.ErrInvalidCredentials)
 		return
 	}
 
