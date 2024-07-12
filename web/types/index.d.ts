@@ -1,4 +1,4 @@
-export { Response }
+export { Response, ErrorResponse, User, Token, Notification }
 
 declare global {
   interface Response<T> {
@@ -14,9 +14,9 @@ declare global {
     id: string,
     email: string,
     username: string,
-    password: string?,
+    password: string,
     created_at: Date,
-    updated_at: Date?,
+    updated_at: Date | undefined,
   }
 
   interface Token {
@@ -25,6 +25,6 @@ declare global {
     value: string,
     expires_at: Date,
     created_at: Date,
-    updated_at: Date?,
+    updated_at: Date | undefined,
   }
 }

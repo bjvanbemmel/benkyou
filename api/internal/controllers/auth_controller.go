@@ -50,6 +50,9 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 	if err == nil && token.ExpiresAt.After(time.Now()) {
 		response.New(w, http.StatusOK, token)
 		return
+		// Remove token if expired
+	} else if err == nil {
+		a.tokenRepository.Delete(token.ID)
 	}
 
 	token, err = a.tokenRepository.Create(data.CreateTokenParams{
