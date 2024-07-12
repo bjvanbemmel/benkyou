@@ -2,11 +2,11 @@ package requests
 
 import (
 	"encoding/json"
-	"errors"
 	"net/http"
 	"reflect"
 	"strings"
 
+	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
@@ -45,7 +45,7 @@ func Decode[T Request](r *http.Request) (T, error) {
 	var req T
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
-		return req, errors.New("invalid request body")
+		return req, errors.ErrInvalidRequest
 	}
 
 	return req, nil

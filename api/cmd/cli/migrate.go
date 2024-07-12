@@ -2,12 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"io"
 	"os"
 
 	migrations "github.com/bjvanbemmel/benkyou"
+	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 	"github.com/pressly/goose/v3"

@@ -4,6 +4,13 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
+
+	"github.com/bjvanbemmel/benkyou/internal/errors"
+)
+
+var (
+	target string = os.Getenv("API_BUILD_TARGET")
 )
 
 type Response[T any] struct {
@@ -27,6 +34,10 @@ func New[T any](w http.ResponseWriter, status int, object T) {
 }
 
 func NewError(w http.ResponseWriter, status int, err error) {
+	if target == "release" {
+		err = errors.ErrSomethingWentWrong
+	}
+
 	raw, _ := json.Marshal(Error{
 		Message: err.Error(),
 		Status:  status,
@@ -34,5 +45,5 @@ func NewError(w http.ResponseWriter, status int, err error) {
 
 	w.Header().Add("Content-Type", "application/json")
 	w.WriteHeader(status)
-	fmt.Fprint(w, string(raw))
+	fmt.Fprintf(w, "%s", raw)
 }

@@ -2,11 +2,11 @@ package controllers
 
 import (
 	"crypto/sha256"
-	"errors"
 	"fmt"
 	"net/http"
 
 	"github.com/bjvanbemmel/benkyou/internal/data"
+	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/bjvanbemmel/benkyou/internal/repositories"
 	"github.com/bjvanbemmel/benkyou/internal/requests"
 	"github.com/bjvanbemmel/benkyou/internal/response"
@@ -70,7 +70,7 @@ func (u UserController) Update(w http.ResponseWriter, r *http.Request) {
 	token := r.Context().Value("token").(data.Token)
 
 	if token.UserID != id {
-		response.NewError(w, http.StatusUnauthorized, errors.New("you are not authorized to edit this user"))
+		response.NewError(w, http.StatusUnauthorized, errors.ErrUnauthorized)
 		return
 	}
 
@@ -99,12 +99,13 @@ func (u UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	token := r.Context().Value("token").(data.Token)
 
 	if token.UserID != id {
-		response.NewError(w, http.StatusUnauthorized, errors.New("you are not authorized to delete this user"))
+		response.NewError(w, http.StatusUnauthorized, errors.ErrUnauthorized)
 		return
 	}
 
 	if err := u.repository.Delete(id); err != nil {
 		response.NewError(w, http.StatusInternalServerError, err)
+		return
 	}
 
 	response.New(w, http.StatusOK, "")

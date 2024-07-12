@@ -2,11 +2,11 @@ package middlewares
 
 import (
 	"context"
-	"errors"
 	"net/http"
 	"strings"
 	"time"
 
+	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/bjvanbemmel/benkyou/internal/repositories"
 	"github.com/bjvanbemmel/benkyou/internal/response"
 )
@@ -15,7 +15,7 @@ func Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if !strings.HasPrefix(authHeader, "Bearer ") {
-			response.NewError(w, http.StatusUnauthorized, errors.New("no bearer token"))
+			response.NewError(w, http.StatusUnauthorized, errors.ErrTokenMissing)
 			return
 		}
 
@@ -29,7 +29,7 @@ func Auth(next http.Handler) http.Handler {
 
 		token, err := tokenRepo.GetByValue(bearerToken)
 		if err != nil {
-			response.NewError(w, http.StatusUnauthorized, errors.New("incorrect token"))
+			response.NewError(w, http.StatusUnauthorized, errors.ErrTokenInvalid)
 			return
 		}
 
@@ -39,7 +39,7 @@ func Auth(next http.Handler) http.Handler {
 				response.NewError(w, http.StatusInternalServerError, err)
 				return
 			}
-			response.NewError(w, http.StatusUnauthorized, errors.New("token has expired"))
+			response.NewError(w, http.StatusUnauthorized, errors.ErrTokenExpired)
 			return
 		}
 

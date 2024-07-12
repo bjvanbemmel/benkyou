@@ -1,12 +1,12 @@
 package controllers
 
 import (
-	"errors"
 	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/bjvanbemmel/benkyou/internal/data"
+	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/bjvanbemmel/benkyou/internal/repositories"
 	"github.com/bjvanbemmel/benkyou/internal/requests"
 	"github.com/bjvanbemmel/benkyou/internal/response"
@@ -34,14 +34,14 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 
 	user, err := a.userRepository.GetUserWithPasswordByUsername(req.Username)
 	if err != nil {
-		response.NewError(w, http.StatusNotFound, errors.New("given user does not exist"))
+		response.NewError(w, http.StatusNotFound, errors.ErrInvalidCredentials)
 		return
 	}
 
 	hashedPassword := utils.Hash(req.Password)
 
 	if user.Password != hashedPassword {
-		response.NewError(w, http.StatusUnauthorized, errors.New("incorrect password"))
+		response.NewError(w, http.StatusUnauthorized, errors.ErrInvalidCredentials)
 		return
 	}
 

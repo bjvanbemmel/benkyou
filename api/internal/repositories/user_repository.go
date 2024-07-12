@@ -2,9 +2,11 @@ package repositories
 
 import (
 	"context"
+	"database/sql"
 
 	"github.com/bjvanbemmel/benkyou/internal/data"
 	"github.com/bjvanbemmel/benkyou/internal/database"
+	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -28,7 +30,7 @@ func NewUserRepository(ctx context.Context) (UserRepository, error) {
 	}, nil
 }
 
-func (u UserRepository) CloseConn() error {
+func (u *UserRepository) CloseConn() error {
 	return u.conn.Conn().Close(u.ctx)
 }
 
@@ -37,7 +39,12 @@ func (u UserRepository) Index() ([]data.ListUsersRow, error) {
 }
 
 func (u UserRepository) Get(id uuid.UUID) (data.GetUserRow, error) {
-	return u.queries.GetUser(u.ctx, id)
+	user, err := u.queries.GetUser(u.ctx, id)
+	if errors.Is(err, sql.ErrNoRows) {
+		return user, errors.ErrResourceNotFound
+	}
+
+	return user, err
 }
 
 func (u UserRepository) GetWithPassword(id uuid.UUID) (data.User, error) {
