@@ -7,5 +7,5 @@ html, body {
 }
 
 body {
-  @apply dark:bg-zinc-900 bg-zinc-50
+  @apply bg-[#141414]
 }
