@@ -28,7 +28,7 @@ func NewTokenRepository(ctx context.Context) (TokenRepository, error) {
 	}, nil
 }
 
-func (t *TokenRepository) CloseConn() error {
+func (t TokenRepository) CloseConn() error {
 	return t.conn.Conn().Close(t.ctx)
 }
 
