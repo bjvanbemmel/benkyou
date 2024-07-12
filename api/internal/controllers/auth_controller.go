@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"crypto/sha256"
 	"errors"
 	"fmt"
 	"net/http"
@@ -11,6 +10,7 @@ import (
 	"github.com/bjvanbemmel/benkyou/internal/repositories"
 	"github.com/bjvanbemmel/benkyou/internal/requests"
 	"github.com/bjvanbemmel/benkyou/internal/response"
+	"github.com/bjvanbemmel/benkyou/internal/utils"
 )
 
 type AuthController struct {
@@ -38,7 +38,7 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hashedPassword := fmt.Sprintf("%x", sha256.Sum256([]byte(req.Password)))
+	hashedPassword := utils.Hash(req.Password)
 
 	if user.Password != hashedPassword {
 		response.NewError(w, http.StatusUnauthorized, errors.New("incorrect password"))
@@ -54,7 +54,7 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 
 	token, err = a.tokenRepository.Create(data.CreateTokenParams{
 		UserID:    user.ID,
-		Value:     fmt.Sprintf("%x", sha256.Sum256([]byte(fmt.Sprintf("%v%d", user.ID, time.Now().UnixMicro())))),
+		Value:     utils.Hash(fmt.Sprintf("%v%d", user.ID, time.Now().UnixMicro())),
 		ExpiresAt: time.Now().Add(time.Hour * 24 * 30),
 	})
 	if err != nil {
