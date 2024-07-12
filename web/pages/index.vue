@@ -52,7 +52,7 @@
 <template>
   <NuxtLayout name="authenticated">
     <div
-      class="mx-auto w-fit"
+      class="px-6 min-w-64 sm:mx-auto w-full sm:w-fit"
     >
       <div
         class="flex flex-col sm:gap-0 gap-6 sm:flex-row sm:justify-between"
@@ -80,15 +80,15 @@
       </div>
       <el-divider />
       <div
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4"
+        class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4"
       >
         <button
           v-for="workspace in workspaces"
           :key="workspace.id"
-          class=""
+          class="w-full"
           >
           <el-card
-            class="text-left w-96 sm:w-64 h-32"
+            class="text-left w-full sm:w-64 h-32"
           >
             <el-tag
               class="mb-2"
