@@ -88,7 +88,7 @@
           class=""
           >
           <el-card
-            class="text-left w-64 h-32"
+            class="text-left w-96 sm:w-64 h-32"
           >
             <el-tag
               class="mb-2"
