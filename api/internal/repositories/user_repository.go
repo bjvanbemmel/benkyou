@@ -2,7 +2,6 @@ package repositories
 
 import (
 	"context"
-	"database/sql"
 
 	"github.com/bjvanbemmel/benkyou/internal/data"
 	"github.com/bjvanbemmel/benkyou/internal/database"
@@ -35,34 +34,35 @@ func (u *UserRepository) CloseConn() error {
 }
 
 func (u UserRepository) Index() ([]data.ListUsersRow, error) {
-	return u.queries.ListUsers(u.ctx)
+	users, err := u.queries.ListUsers(u.ctx)
+	return users, errors.MapDatabaseError(err)
 }
 
 func (u UserRepository) Get(id uuid.UUID) (data.GetUserRow, error) {
 	user, err := u.queries.GetUser(u.ctx, id)
-	if errors.Is(err, sql.ErrNoRows) {
-		return user, errors.ErrResourceNotFound
-	}
-
-	return user, err
+	return user, errors.MapDatabaseError(err)
 }
 
 func (u UserRepository) GetWithPassword(id uuid.UUID) (data.User, error) {
-	return u.queries.GetUserWithPassword(u.ctx, id)
+	user, err := u.queries.GetUserWithPassword(u.ctx, id)
+	return user, errors.MapDatabaseError(err)
 }
 
 func (u UserRepository) GetUserWithPasswordByUsername(username string) (data.User, error) {
-	return u.queries.GetUserWithPasswordByUsername(u.ctx, username)
+	user, err := u.queries.GetUserWithPasswordByUsername(u.ctx, username)
+	return user, errors.MapDatabaseError(err)
 }
 
 func (u UserRepository) Create(user data.CreateUserParams) (data.CreateUserRow, error) {
-	return u.queries.CreateUser(u.ctx, user)
+	created, err := u.queries.CreateUser(u.ctx, user)
+	return created, errors.MapDatabaseError(err)
 }
 
 func (u UserRepository) Update(user data.UpdateUserParams) (data.UpdateUserRow, error) {
-	return u.queries.UpdateUser(u.ctx, user)
+	updated, err := u.queries.UpdateUser(u.ctx, user)
+	return updated, errors.MapDatabaseError(err)
 }
 
 func (u UserRepository) Delete(id uuid.UUID) error {
-	return u.queries.DeleteUser(u.ctx, id)
+	return errors.MapDatabaseError(u.queries.DeleteUser(u.ctx, id))
 }

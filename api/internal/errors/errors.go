@@ -1,17 +1,41 @@
 package errors
 
-import "errors"
+import (
+	"errors"
+	"log/slog"
+	"net/http"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
+)
 
 var (
-	ErrSomethingWentWrong = errors.New("something went wrong")
-	ErrResourceNotFound   = errors.New("resource not found")
-	ErrTokenExpired       = errors.New("token has expired")
-	ErrTokenMissing       = errors.New("bearer token missing")
-	ErrTokenInvalid       = errors.New("invalid token")
-	ErrUnauthorized       = errors.New("not authorized to perform this action")
-	ErrInvalidCredentials = errors.New("invalid credentials")
-	ErrInvalidID          = errors.New("invalid id")
-	ErrInvalidRequest     = errors.New("invalid request body")
+	ErrSomethingWentWrong    = errors.New("something went wrong")
+	ErrResourceNotFound      = errors.New("resource not found")
+	ErrTokenExpired          = errors.New("token has expired")
+	ErrTokenMissing          = errors.New("bearer token missing")
+	ErrTokenInvalid          = errors.New("invalid token")
+	ErrUnauthorized          = errors.New("not authorized to perform this action")
+	ErrInvalidCredentials    = errors.New("invalid credentials")
+	ErrInvalidID             = errors.New("invalid id")
+	ErrInvalidRequest        = errors.New("invalid request body")
+	ErrResourceAlreadyExists = errors.New("resource already exists")
+)
+
+var errorStatusMap map[error]int = map[error]int{
+	ErrSomethingWentWrong:    http.StatusInternalServerError,
+	ErrResourceNotFound:      http.StatusNotFound,
+	ErrTokenExpired:          http.StatusUnauthorized,
+	ErrTokenMissing:          http.StatusBadRequest,
+	ErrTokenInvalid:          http.StatusUnauthorized,
+	ErrUnauthorized:          http.StatusUnauthorized,
+	ErrInvalidCredentials:    http.StatusUnauthorized,
+	ErrInvalidID:             http.StatusBadRequest,
+	ErrResourceAlreadyExists: http.StatusConflict,
+}
+
+const (
+	SQL_FOREIGN_KEY_CONSTRAINT string = "23505"
 )
 
 // New returns an error that formats as the given text.
@@ -60,4 +84,29 @@ func As(err error, target any) bool {
 // compare err and the target and not call [Unwrap] on either.
 func Is(err error, target error) bool {
 	return errors.Is(err, target)
+}
+
+// Returns both the original error and a status code correlated to the given error
+func WithStatusCode(err error) (int, error) {
+	return errorStatusMap[err], err
+}
+
+// Obfuscates SQL errors and maps them to user friendly ones
+func MapDatabaseError(err error) error {
+	if errors.Is(err, pgx.ErrNoRows) {
+		return ErrResourceNotFound
+	}
+
+	var pgErr *pgconn.PgError
+	if !errors.As(err, &pgErr) {
+		return err
+	}
+
+	switch pgErr.Code {
+	case SQL_FOREIGN_KEY_CONSTRAINT:
+		return ErrResourceAlreadyExists
+	default:
+		slog.Error("UNRESOLVED_SQL_ERROR", "code", pgErr.Code, "message", pgErr.Message)
+		return ErrSomethingWentWrong
+	}
 }

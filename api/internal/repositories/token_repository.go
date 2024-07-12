@@ -5,6 +5,7 @@ import (
 
 	"github.com/bjvanbemmel/benkyou/internal/data"
 	"github.com/bjvanbemmel/benkyou/internal/database"
+	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -33,29 +34,35 @@ func (t TokenRepository) CloseConn() error {
 }
 
 func (t TokenRepository) Index() ([]data.Token, error) {
-	return t.queries.ListTokens(t.ctx)
+	tokens, err := t.queries.ListTokens(t.ctx)
+	return tokens, errors.MapDatabaseError(err)
 }
 
 func (t TokenRepository) Get(id uuid.UUID) (data.Token, error) {
-	return t.queries.GetToken(t.ctx, id)
+	token, err := t.queries.GetToken(t.ctx, id)
+	return token, errors.MapDatabaseError(err)
 }
 
 func (t TokenRepository) GetByValue(value string) (data.Token, error) {
-	return t.queries.GetTokenByValue(t.ctx, value)
+	token, err := t.queries.GetTokenByValue(t.ctx, value)
+	return token, errors.MapDatabaseError(err)
 }
 
 func (t TokenRepository) GetByUserID(id uuid.UUID) (data.Token, error) {
-	return t.queries.GetTokenByUserID(t.ctx, id)
+	token, err := t.queries.GetTokenByUserID(t.ctx, id)
+	return token, errors.MapDatabaseError(err)
 }
 
 func (t TokenRepository) Create(token data.CreateTokenParams) (data.Token, error) {
-	return t.queries.CreateToken(t.ctx, token)
+	created, err := t.queries.CreateToken(t.ctx, token)
+	return created, errors.MapDatabaseError(err)
 }
 
 func (t TokenRepository) Update(token data.UpdateTokenParams) (data.Token, error) {
-	return t.queries.UpdateToken(t.ctx, token)
+	updated, err := t.queries.UpdateToken(t.ctx, token)
+	return updated, errors.MapDatabaseError(err)
 }
 
 func (t TokenRepository) Delete(id uuid.UUID) error {
-	return t.queries.DeleteToken(t.ctx, id)
+	return errors.MapDatabaseError(t.queries.DeleteToken(t.ctx, id))
 }

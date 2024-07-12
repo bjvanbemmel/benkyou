@@ -15,7 +15,7 @@ func Auth(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		authHeader := r.Header.Get("Authorization")
 		if !strings.HasPrefix(authHeader, "Bearer ") {
-			response.NewError(w, http.StatusUnauthorized, errors.ErrTokenMissing)
+			response.NewError(w, errors.ErrTokenMissing)
 			return
 		}
 
@@ -23,23 +23,23 @@ func Auth(next http.Handler) http.Handler {
 
 		tokenRepo, err := repositories.NewTokenRepository(context.Background())
 		if err != nil {
-			response.NewError(w, http.StatusInternalServerError, err)
+			response.NewError(w, err)
 			return
 		}
 
 		token, err := tokenRepo.GetByValue(bearerToken)
 		if err != nil {
-			response.NewError(w, http.StatusUnauthorized, errors.ErrTokenInvalid)
+			response.NewError(w, errors.ErrTokenInvalid)
 			return
 		}
 
 		if !token.ExpiresAt.After(time.Now()) {
 			// Delete expired token, expose error upon failure
 			if err := tokenRepo.Delete(token.ID); err != nil {
-				response.NewError(w, http.StatusInternalServerError, err)
+				response.NewError(w, err)
 				return
 			}
-			response.NewError(w, http.StatusUnauthorized, errors.ErrTokenExpired)
+			response.NewError(w, errors.ErrTokenExpired)
 			return
 		}
 

@@ -28,20 +28,20 @@ func NewAuthController(userRepo repositories.UserRepository, tokenRepo repositor
 func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 	req, err := requests.Validate[requests.AuthLoginRequest](r)
 	if err != nil {
-		response.NewError(w, http.StatusBadRequest, err)
+		response.NewError(w, err)
 		return
 	}
 
 	user, err := a.userRepository.GetUserWithPasswordByUsername(req.Username)
 	if err != nil {
-		response.NewError(w, http.StatusUnauthorized, errors.ErrInvalidCredentials)
+		response.NewError(w, errors.ErrInvalidCredentials)
 		return
 	}
 
 	hashedPassword := utils.Hash(req.Password)
 
 	if user.Password != hashedPassword {
-		response.NewError(w, http.StatusUnauthorized, errors.ErrInvalidCredentials)
+		response.NewError(w, errors.ErrInvalidCredentials)
 		return
 	}
 
@@ -58,7 +58,7 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		ExpiresAt: time.Now().Add(time.Hour * 24 * 30),
 	})
 	if err != nil {
-		response.NewError(w, http.StatusInternalServerError, err)
+		response.NewError(w, err)
 		return
 	}
 
@@ -70,7 +70,7 @@ func (a AuthController) Identity(w http.ResponseWriter, r *http.Request) {
 
 	user, err := a.userRepository.Get(token.UserID)
 	if err != nil {
-		response.NewError(w, http.StatusInternalServerError, err)
+		response.NewError(w, err)
 		return
 	}
 
@@ -82,7 +82,7 @@ func (a AuthController) Logout(w http.ResponseWriter, r *http.Request) {
 
 	err := a.tokenRepository.Delete(token.ID)
 	if err != nil {
-		response.NewError(w, http.StatusInternalServerError, err)
+		response.NewError(w, err)
 		return
 	}
 

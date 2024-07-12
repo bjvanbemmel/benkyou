@@ -38,7 +38,7 @@ func (u UserController) Get(w http.ResponseWriter, r *http.Request) {
 
 	user, err := u.repository.Get(id)
 	if err != nil {
-		response.NewError(w, http.StatusNotFound, err)
+		response.NewError(w, err)
 		return
 	}
 
@@ -48,7 +48,7 @@ func (u UserController) Get(w http.ResponseWriter, r *http.Request) {
 func (u UserController) Create(w http.ResponseWriter, r *http.Request) {
 	req, err := requests.Validate[requests.UserCreateRequest](r)
 	if err != nil {
-		response.NewError(w, http.StatusBadRequest, err)
+		response.NewError(w, err)
 		return
 	}
 
@@ -58,7 +58,7 @@ func (u UserController) Create(w http.ResponseWriter, r *http.Request) {
 		Password: fmt.Sprintf("%x", sha256.Sum256([]byte(req.Password))),
 	})
 	if err != nil {
-		response.NewError(w, http.StatusInternalServerError, err)
+		response.NewError(w, err)
 		return
 	}
 
@@ -70,13 +70,13 @@ func (u UserController) Update(w http.ResponseWriter, r *http.Request) {
 	token := r.Context().Value("token").(data.Token)
 
 	if token.UserID != id {
-		response.NewError(w, http.StatusUnauthorized, errors.ErrUnauthorized)
+		response.NewError(w, errors.ErrUnauthorized)
 		return
 	}
 
 	req, err := requests.Validate[requests.UserUpdateRequest](r)
 	if err != nil {
-		response.NewError(w, http.StatusBadRequest, err)
+		response.NewError(w, err)
 		return
 	}
 
@@ -87,7 +87,7 @@ func (u UserController) Update(w http.ResponseWriter, r *http.Request) {
 		Password: fmt.Sprintf("%x", sha256.Sum256([]byte(req.Password))),
 	})
 	if err != nil {
-		response.NewError(w, http.StatusInternalServerError, err)
+		response.NewError(w, err)
 		return
 	}
 
@@ -99,12 +99,12 @@ func (u UserController) Delete(w http.ResponseWriter, r *http.Request) {
 	token := r.Context().Value("token").(data.Token)
 
 	if token.UserID != id {
-		response.NewError(w, http.StatusUnauthorized, errors.ErrUnauthorized)
+		response.NewError(w, errors.ErrUnauthorized)
 		return
 	}
 
 	if err := u.repository.Delete(id); err != nil {
-		response.NewError(w, http.StatusInternalServerError, err)
+		response.NewError(w, err)
 		return
 	}
 

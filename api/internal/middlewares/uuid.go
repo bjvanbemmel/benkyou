@@ -15,13 +15,13 @@ func Uuid(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := chi.URLParam(r, "id")
 		if id == "" {
-			response.NewError(w, http.StatusBadRequest, errors.ErrInvalidID)
+			response.NewError(w, errors.ErrInvalidID)
 			return
 		}
 
 		parsed, err := uuid.Parse(id)
 		if err != nil {
-			response.NewError(w, http.StatusBadRequest, errors.ErrInvalidID)
+			response.NewError(w, errors.ErrInvalidID)
 			return
 		}
 

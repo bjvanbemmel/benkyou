@@ -33,7 +33,8 @@ func New[T any](w http.ResponseWriter, status int, object T) {
 	fmt.Fprint(w, string(raw))
 }
 
-func NewError(w http.ResponseWriter, status int, err error) {
+func NewError(w http.ResponseWriter, err error) {
+	status, err := errors.WithStatusCode(err)
 	if status == http.StatusInternalServerError && target == "release" {
 		err = errors.ErrSomethingWentWrong
 	}
