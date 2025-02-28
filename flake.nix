@@ -18,6 +18,7 @@
             nodejs
             goose
             sqlc
+            httpie
           ];
 
           name = "benkyou";
