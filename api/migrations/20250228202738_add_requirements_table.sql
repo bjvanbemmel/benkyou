@@ -5,7 +5,7 @@ CREATE TABLE requirements (
   user_id uuid NOT NULL,
   sprint_id uuid,
   feature_id uuid,
-  state INT,
+  state INT NOT NULL DEFAULT 0,
   title VARCHAR(255) NOT NULL,
   estimate INT,
   description TEXT,

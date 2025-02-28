@@ -4,7 +4,7 @@ CREATE TABLE features (
   id uuid DEFAULT gen_random_uuid(),
   user_id uuid NOT NULL,
   sprint_id uuid,
-  state INT,
+  state INT NOT NULL DEFAULT 0,
   title VARCHAR(255) NOT NULL,
   description TEXT,
   created_at TIMESTAMP NOT NULL DEFAULT now(),
