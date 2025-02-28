@@ -4,6 +4,7 @@ import (
 	"crypto/sha256"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/bjvanbemmel/benkyou/internal/data"
@@ -18,6 +19,10 @@ type AuthController struct {
 	userRepository  repositories.UserRepository
 	tokenRepository repositories.TokenRepository
 }
+
+const (
+	HASH_ALGORITHM_VERSION = 1
+)
 
 func NewAuthController(userRepo repositories.UserRepository, tokenRepo repositories.TokenRepository) AuthController {
 	return AuthController{
@@ -39,9 +44,11 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	hashedPassword := utils.Hash(req.Password)
+	splitUserPassword := strings.Split(user.Password, "$")
+	salt := splitUserPassword[2]
+	hashedPassword := utils.Hash(req.Password + salt)
 
-	if user.Password != hashedPassword {
+	if splitUserPassword[1] != hashedPassword {
 		response.NewError(w, errors.ErrInvalidCredentials)
 		return
 	}
@@ -76,10 +83,13 @@ func (a AuthController) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	salt := utils.RandomString()
+	saltedPassword := req.Password + salt
+
 	user, err := a.userRepository.Create(data.CreateUserParams{
 		Email:    req.Email,
 		Username: req.Username,
-		Password: fmt.Sprintf("%x", sha256.Sum256([]byte(req.Password))),
+		Password: fmt.Sprintf("%d$%x$%s", HASH_ALGORITHM_VERSION, sha256.Sum256([]byte(saltedPassword)), salt),
 	})
 	if err != nil {
 		response.NewError(w, err)
