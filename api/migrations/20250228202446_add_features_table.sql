@@ -12,8 +12,8 @@ CREATE TABLE features (
 
   PRIMARY KEY (id),
 
-  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-  CONSTRAINT fk_sprint FOREIGN KEY (sprint_id) REFERENCES sprints (id) ON DELETE CASCADE
+  CONSTRAINT fk_feature_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  CONSTRAINT fk_feature_sprint FOREIGN KEY (sprint_id) REFERENCES sprints (id) ON DELETE CASCADE
 );
 -- +goose StatementEnd
 

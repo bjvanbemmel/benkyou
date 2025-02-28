@@ -26,7 +26,7 @@ func NewUserController(repo repositories.UserRepository) UserController {
 func (u UserController) Index(w http.ResponseWriter, r *http.Request) {
 	users, err := u.repository.Index()
 	if err != nil {
-		http.Error(w, http.StatusText(500), 500)
+		response.NewError(w, err)
 		return
 	}
 

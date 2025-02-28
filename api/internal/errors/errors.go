@@ -31,6 +31,7 @@ var errorStatusMap map[error]int = map[error]int{
 	ErrUnauthorized:          http.StatusUnauthorized,
 	ErrInvalidCredentials:    http.StatusUnauthorized,
 	ErrInvalidID:             http.StatusBadRequest,
+	ErrInvalidRequest:        http.StatusBadRequest,
 	ErrResourceAlreadyExists: http.StatusConflict,
 }
 

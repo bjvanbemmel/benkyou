@@ -2,9 +2,11 @@ package requests
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"reflect"
 	"strings"
+	"time"
 
 	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/go-playground/locales/en"
@@ -37,6 +39,9 @@ func init() {
 
 		return name
 	})
+
+	// Validate whether a given field is using the RFC3339 datetime format
+	validate.RegisterValidation("rfc3339", IsValidDateTimeFormat)
 }
 
 type Request interface{}
@@ -45,6 +50,7 @@ func Decode[T Request](r *http.Request) (T, error) {
 	var req T
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
+		fmt.Println(err)
 		return req, errors.ErrInvalidRequest
 	}
 
@@ -67,6 +73,11 @@ func Validate[T Request](r *http.Request) (T, error) {
 	return req, nil
 }
 
+func IsValidDateTimeFormat(fl validator.FieldLevel) bool {
+	_, err := time.Parse(time.RFC3339, fl.Field().String())
+	return err == nil
+}
+
 // PUT /users/{id}
 type UserUpdateRequest struct {
 	Email           string `json:"email" validate:"required,email"`
@@ -85,6 +96,38 @@ type AuthRegisterRequest struct {
 
 // POST /auth/login
 type AuthLoginRequest struct {
-	Username string `json:"username" validate:"required"`
-	Password string `json:"password" validate:"required"`
+	Username string `json:"username" validate:"required,max=30"`
+	Password string `json:"password" validate:"required,max=255"`
+}
+
+// POST /sprints
+type SprintCreateRequest struct {
+	Title     string `json:"title" validate:"required,max=80"`
+	StartDate string `json:"start_date" validate:"required,rfc3339"`
+	EndDate   string `json:"end_date" validate:"required,rfc3339"`
+}
+
+// PUT /sprints/{id}
+type SprintUpdateRequest struct {
+	Title     string `json:"title" validate:"required,max=80"`
+	StartDate string `json:"start_date" validate:"required,rfc3339"`
+	EndDate   string `json:"end_date" validate:"required,rfc3339"`
+}
+
+// POST /features
+type FeatureCreateRequest struct {
+	UserID      string `json:"user_id" validate:"required,uuid"`
+	SprintID    string `json:"sprint_id" validate:"uuid"`
+	State       string `json:"state" validate:"required,number"`
+	Title       string `json:"title" validate:"required,max=255"`
+	Description string `json:"description"`
+}
+
+// PUT /features/{id}
+type FeatureUpdateRequest struct {
+	UserID      string `json:"user_id" validate:"required,uuid"`
+	SprintID    string `json:"sprint_id" validate:"uuid"`
+	State       string `json:"state" validate:"required,number"`
+	Title       string `json:"title" validate:"required,max=255"`
+	Description string `json:"description"`
 }

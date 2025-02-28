@@ -40,6 +40,20 @@ func main() {
 
 	authController := controllers.NewAuthController(userRepository, tokenRepository)
 
+	sprintRepository, err := repositories.NewSprintRepository(context.Background())
+	if err != nil {
+		panic(err)
+	}
+
+	sprintController := controllers.NewSprintController(sprintRepository)
+
+	featureRepository, err := repositories.NewFeatureRepository(context.Background())
+	if err != nil {
+		panic(err)
+	}
+
+	featureController := controllers.NewFeatureController(featureRepository)
+
 	// Protected routes
 	r.Group(func(r chi.Router) {
 		r.Use(middlewares.Auth)
@@ -49,6 +63,24 @@ func main() {
 			r.Get("/", userController.Get)
 			r.Put("/", userController.Update)
 			r.Delete("/", userController.Delete)
+		})
+
+		r.Get("/sprints", sprintController.Index)
+		r.Post("/sprints", sprintController.Create)
+		r.Route("/sprints/{id}", func(r chi.Router) {
+			r.Use(middlewares.Uuid)
+			r.Get("/", sprintController.Get)
+			r.Put("/", sprintController.Update)
+			r.Delete("/", sprintController.Delete)
+		})
+
+		r.Get("/features", featureController.Index)
+		r.Post("/features", featureController.Create)
+		r.Route("/features/{id}", func(r chi.Router) {
+			r.Use(middlewares.Uuid)
+			r.Get("/", featureController.Get)
+			r.Put("/", featureController.Update)
+			r.Delete("/", featureController.Delete)
 		})
 
 		r.Post("/auth/logout", authController.Logout)

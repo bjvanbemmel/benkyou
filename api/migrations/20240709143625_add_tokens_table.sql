@@ -10,7 +10,7 @@ CREATE TABLE tokens (
 
   PRIMARY KEY (id),
 
-  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
+  CONSTRAINT fk_token_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 -- +goose StatementEnd
 
