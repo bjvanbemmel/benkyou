@@ -19,12 +19,12 @@ func main() {
 	r.Use(middleware.Logger)
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Timeout(time.Second * 60))
-	r.Use(cors.Handler((cors.Options{
+	r.Use(cors.Handler(cors.Options{
 		AllowedOrigins: []string{"https://*", "http://*"},
 		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders: []string{"Accept", "Authorization", "Content-Type"},
 		MaxAge:         300,
-	})))
+	}))
 
 	userRepository, err := repositories.NewUserRepository(context.Background())
 	if err != nil {
@@ -39,8 +39,6 @@ func main() {
 	}
 
 	authController := controllers.NewAuthController(userRepository, tokenRepository)
-
-	r.Post("/users", userController.Create)
 
 	// Protected routes
 	r.Group(func(r chi.Router) {
@@ -58,6 +56,7 @@ func main() {
 	})
 
 	r.Post("/auth/login", authController.Login)
+	r.Post("/auth/register", authController.Register)
 
 	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Hello, World!"))

@@ -29,5 +29,5 @@ func New(ctx context.Context) (*pgxpool.Conn, error) {
 
 	db, err := pool.Acquire(ctx)
 
-	return db, nil
+	return db, err
 }

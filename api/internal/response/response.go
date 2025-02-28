@@ -39,6 +39,10 @@ func NewError(w http.ResponseWriter, err error) {
 		err = errors.ErrSomethingWentWrong
 	}
 
+	if status == 0 {
+		status = http.StatusInternalServerError
+	}
+
 	raw, _ := json.Marshal(Error{
 		Message: err.Error(),
 		Status:  status,

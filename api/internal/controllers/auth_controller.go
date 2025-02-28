@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"crypto/sha256"
 	"fmt"
 	"net/http"
 	"time"
@@ -66,6 +67,26 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	response.New(w, http.StatusOK, token)
+}
+
+func (a AuthController) Register(w http.ResponseWriter, r *http.Request) {
+	req, err := requests.Validate[requests.AuthRegisterRequest](r)
+	if err != nil {
+		response.NewError(w, err)
+		return
+	}
+
+	user, err := a.userRepository.Create(data.CreateUserParams{
+		Email:    req.Email,
+		Username: req.Username,
+		Password: fmt.Sprintf("%x", sha256.Sum256([]byte(req.Password))),
+	})
+	if err != nil {
+		response.NewError(w, err)
+		return
+	}
+
+	response.New(w, http.StatusCreated, user)
 }
 
 func (a AuthController) Identity(w http.ResponseWriter, r *http.Request) {
