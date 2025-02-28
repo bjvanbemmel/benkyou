@@ -1,24 +1,32 @@
 {
-  "name": "nuxt-app",
+  "name": "web",
+  "version": "0.0.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "nuxt build",
-    "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "dev": "vite --host 0.0.0.0",
+    "build": "run-p type-check \"build-only {@}\" --",
+    "preview": "vite preview",
+    "build-only": "vite build",
+    "type-check": "vue-tsc --build"
   },
   "dependencies": {
-    "@nuxtjs/tailwindcss": "^6.12.0",
-    "@vueuse/core": "^10.11.0",
-    "nuxt": "^3.12.3",
-    "ts-pattern": "^5.2.0",
-    "vue": "latest"
+    "@tailwindcss/vite": "^4.0.9",
+    "pinia": "^3.0.1",
+    "tailwindcss": "^4.0.9",
+    "vue": "^3.5.13",
+    "vue-router": "^4.5.0"
   },
   "devDependencies": {
-    "@element-plus/nuxt": "^1.0.9",
-    "@nuxt/eslint": "^0.3.13",
-    "eslint": "^8.57.0"
+    "@tsconfig/node22": "^22.0.0",
+    "@types/node": "^22.13.4",
+    "@vitejs/plugin-vue": "^5.2.1",
+    "@vitejs/plugin-vue-jsx": "^4.1.1",
+    "@vue/tsconfig": "^0.7.0",
+    "npm-run-all2": "^7.0.2",
+    "typescript": "~5.7.3",
+    "vite": "^6.1.0",
+    "vite-plugin-vue-devtools": "^7.7.2",
+    "vue-tsc": "^2.2.2"
   }
 }

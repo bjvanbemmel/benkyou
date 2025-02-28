@@ -19,7 +19,7 @@ services:
       dockerfile: Dockerfile
       target: ${WEB_BUILD_TARGET:-debug}
     ports:
-      - ${WEB_PORT}:3000
+      - ${WEB_PORT}:5173
     networks:
       - benkyou
     volumes:
