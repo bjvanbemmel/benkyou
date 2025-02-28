@@ -7,11 +7,10 @@ CREATE TABLE tokens (
   expires_at TIMESTAMP NOT NULL,
   created_at TIMESTAMP NOT NULL DEFAULT now(),
   updated_at TIMESTAMP,
+
   PRIMARY KEY (id),
-  CONSTRAINT fk_user
-    FOREIGN KEY(user_id)
-      REFERENCES users(id)
-      ON DELETE CASCADE
+
+  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE
 );
 -- +goose StatementEnd
 

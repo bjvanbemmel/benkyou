@@ -1,0 +1,26 @@
+-- +goose Up
+-- +goose StatementBegin
+CREATE TABLE requirements (
+  id uuid DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  sprint_id uuid,
+  feature_id uuid,
+  state INT,
+  title VARCHAR(255) NOT NULL,
+  estimate INT,
+  description TEXT,
+  created_at TIMESTAMP NOT NULL DEFAULT now(),
+  updated_at TIMESTAMP,
+
+  PRIMARY KEY (id),
+
+  CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+  CONSTRAINT fk_sprint FOREIGN KEY (sprint_id) REFERENCES sprints (id) ON DELETE CASCADE,
+  CONSTRAINT fk_feature FOREIGN KEY (feature_id) REFERENCES features (id) ON DELETE CASCADE
+);
+-- +goose StatementEnd
+
+-- +goose Down
+-- +goose StatementBegin
+DROP TABLE requirements;
+-- +goose StatementEnd
