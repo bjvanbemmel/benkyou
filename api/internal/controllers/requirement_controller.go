@@ -77,7 +77,7 @@ func (c RequirementController) Create(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.SprintID != "" {
-		if _, err := c.sprintRepository.Get(uuid.MustParse(req.FeatureID)); err != nil {
+		if _, err := c.sprintRepository.Get(uuid.MustParse(req.SprintID)); err != nil {
 			response.NewError(w, err)
 			return
 		}
@@ -133,7 +133,7 @@ func (c RequirementController) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if req.SprintID != "" {
-		if _, err := c.sprintRepository.Get(uuid.MustParse(req.FeatureID)); err != nil {
+		if _, err := c.sprintRepository.Get(uuid.MustParse(req.SprintID)); err != nil {
 			response.NewError(w, err)
 			return
 		}
