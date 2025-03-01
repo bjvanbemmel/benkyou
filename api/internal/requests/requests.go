@@ -116,8 +116,8 @@ type SprintUpdateRequest struct {
 
 // POST /features
 type FeatureCreateRequest struct {
-	UserID      string `json:"user_id" validate:"required,uuid"`
-	SprintID    string `json:"sprint_id" validate:"uuid"`
+	UserID      string `json:"user_id" validate:"omitempty,uuid"`
+	SprintID    string `json:"sprint_id" validate:"omitempty,uuid"`
 	State       string `json:"state" validate:"required,number"`
 	Title       string `json:"title" validate:"required,max=255"`
 	Description string `json:"description"`
@@ -125,9 +125,41 @@ type FeatureCreateRequest struct {
 
 // PUT /features/{id}
 type FeatureUpdateRequest struct {
-	UserID      string `json:"user_id" validate:"required,uuid"`
-	SprintID    string `json:"sprint_id" validate:"uuid"`
+	UserID      string `json:"user_id" validate:"omitempty,uuid"`
+	SprintID    string `json:"sprint_id" validate:"omitempty,uuid"`
 	State       string `json:"state" validate:"required,number"`
 	Title       string `json:"title" validate:"required,max=255"`
 	Description string `json:"description"`
+}
+
+// POST /requirements
+type RequirementCreateRequest struct {
+	UserID      string `json:"user_id" validate:"omitempty,uuid"`
+	SprintID    string `json:"sprint_id" validate:"omitempty,uuid"`
+	FeatureID   string `json:"feature_id" validate:"omitempty,uuid"`
+	State       string `json:"state" validate:"required,number"`
+	Title       string `json:"title" validate:"required,max=255"`
+	Estimate    string `json:"estimate" validate:"omitempty,number"`
+	Description string `json:"description"`
+}
+
+// PUT /requirements/{id}
+type RequirementUpdateRequest struct {
+	UserID      string `json:"user_id" validate:"omitempty,uuid"`
+	SprintID    string `json:"sprint_id" validate:"omitempty,uuid"`
+	FeatureID   string `json:"feature_id" validate:"omitempty,uuid"`
+	State       string `json:"state" validate:"required,number"`
+	Title       string `json:"title" validate:"required,max=255"`
+	Estimate    string `json:"estimate" validate:"omitempty,number"`
+	Description string `json:"description"`
+}
+
+// POST /action-points
+type ActionPointCreateRequest struct {
+	Title string `json:"title" validate:"required"`
+}
+
+// PUT /action-points/{id}
+type ActionPointUpdateRequest struct {
+	Title string `json:"title" validate:"required"`
 }

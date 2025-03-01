@@ -2,7 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE features (
   id uuid DEFAULT gen_random_uuid(),
-  user_id uuid NOT NULL,
+  user_id uuid,
   sprint_id uuid,
   state INT NOT NULL DEFAULT 0,
   title VARCHAR(255) NOT NULL,

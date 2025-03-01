@@ -9,20 +9,29 @@ import (
 	"github.com/bjvanbemmel/benkyou/internal/requests"
 	"github.com/bjvanbemmel/benkyou/internal/response"
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 type FeatureController struct {
-	repository repositories.FeatureRepository
+	featureRepository repositories.FeatureRepository
+	userRepository    repositories.UserRepository
+	sprintRepository  repositories.SprintRepository
 }
 
-func NewFeatureController(repo repositories.FeatureRepository) FeatureController {
+func NewFeatureController(
+	featureRepository repositories.FeatureRepository,
+	userRepository repositories.UserRepository,
+	sprintRepository repositories.SprintRepository,
+) FeatureController {
 	return FeatureController{
-		repository: repo,
+		featureRepository: featureRepository,
+		userRepository:    userRepository,
+		sprintRepository:  sprintRepository,
 	}
 }
 
 func (f FeatureController) Index(w http.ResponseWriter, r *http.Request) {
-	features, err := f.repository.Index()
+	features, err := f.featureRepository.Index()
 	if err != nil {
 		response.NewError(w, err)
 		return
@@ -34,7 +43,7 @@ func (f FeatureController) Index(w http.ResponseWriter, r *http.Request) {
 func (f FeatureController) Get(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("uuid").(uuid.UUID)
 
-	feature, err := f.repository.Get(id)
+	feature, err := f.featureRepository.Get(id)
 	if err != nil {
 		response.NewError(w, err)
 		return
@@ -50,10 +59,30 @@ func (f FeatureController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.UserID != "" {
+		if _, err := f.userRepository.Get(uuid.MustParse(req.UserID)); err != nil {
+			response.NewError(w, err)
+			return
+		}
+	}
+
+	if req.SprintID != "" {
+		if _, err := f.sprintRepository.Get(uuid.MustParse(req.SprintID)); err != nil {
+			response.NewError(w, err)
+			return
+		}
+	}
+
+	var sprintId pgtype.UUID
+	sprintId.Scan(req.SprintID)
+
+	var userId pgtype.UUID
+	userId.Scan(req.UserID)
+
 	state, _ := strconv.Atoi(req.State)
-	feature, err := f.repository.Create(data.CreateFeatureParams{
-		UserID:      uuid.MustParse(req.UserID),
-		SprintID:    uuid.MustParse(req.SprintID),
+	feature, err := f.featureRepository.Create(data.CreateFeatureParams{
+		UserID:      userId,
+		SprintID:    sprintId,
 		State:       int32(state),
 		Title:       req.Title,
 		Description: req.Description,
@@ -63,7 +92,7 @@ func (f FeatureController) Create(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	response.New(w, http.StatusOK, feature)
+	response.New(w, http.StatusCreated, feature)
 }
 
 func (f FeatureController) Update(w http.ResponseWriter, r *http.Request) {
@@ -75,11 +104,31 @@ func (f FeatureController) Update(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.UserID != "" {
+		if _, err := f.userRepository.Get(uuid.MustParse(req.UserID)); err != nil {
+			response.NewError(w, err)
+			return
+		}
+	}
+
+	if req.SprintID != "" {
+		if _, err := f.sprintRepository.Get(uuid.MustParse(req.SprintID)); err != nil {
+			response.NewError(w, err)
+			return
+		}
+	}
+
+	var userId pgtype.UUID
+	userId.Scan(req.UserID)
+
+	var sprintId pgtype.UUID
+	sprintId.Scan(req.SprintID)
+
 	state, _ := strconv.Atoi(req.State)
-	feature, err := f.repository.Update(data.UpdateFeatureParams{
+	feature, err := f.featureRepository.Update(data.UpdateFeatureParams{
 		ID:          id,
-		UserID:      uuid.MustParse(req.UserID),
-		SprintID:    uuid.MustParse(req.SprintID),
+		UserID:      userId,
+		SprintID:    sprintId,
 		State:       int32(state),
 		Title:       req.Title,
 		Description: req.Description,
@@ -95,7 +144,7 @@ func (f FeatureController) Update(w http.ResponseWriter, r *http.Request) {
 func (f FeatureController) Delete(w http.ResponseWriter, r *http.Request) {
 	id := r.Context().Value("uuid").(uuid.UUID)
 
-	if err := f.repository.Delete(id); err != nil {
+	if err := f.featureRepository.Delete(id); err != nil {
 		response.NewError(w, err)
 		return
 	}

@@ -26,33 +26,39 @@ func main() {
 		MaxAge:         300,
 	}))
 
+	// Add repositories
 	userRepository, err := repositories.NewUserRepository(context.Background())
 	if err != nil {
 		panic(err)
 	}
-
-	userController := controllers.NewUserController(userRepository)
-
 	tokenRepository, err := repositories.NewTokenRepository(context.Background())
 	if err != nil {
 		panic(err)
 	}
-
-	authController := controllers.NewAuthController(userRepository, tokenRepository)
-
 	sprintRepository, err := repositories.NewSprintRepository(context.Background())
 	if err != nil {
 		panic(err)
 	}
-
-	sprintController := controllers.NewSprintController(sprintRepository)
-
 	featureRepository, err := repositories.NewFeatureRepository(context.Background())
 	if err != nil {
 		panic(err)
 	}
+	requirementRepository, err := repositories.NewRequirementRepository(context.Background())
+	if err != nil {
+		panic(err)
+	}
+	actionPointRepository, err := repositories.NewActionPointRepository(context.Background())
+	if err != nil {
+		panic(err)
+	}
 
-	featureController := controllers.NewFeatureController(featureRepository)
+	// Add controllers
+	userController := controllers.NewUserController(userRepository)
+	authController := controllers.NewAuthController(userRepository, tokenRepository)
+	sprintController := controllers.NewSprintController(sprintRepository)
+	featureController := controllers.NewFeatureController(featureRepository, userRepository, sprintRepository)
+	requirementController := controllers.NewRequirementController(requirementRepository, featureRepository, sprintRepository, userRepository)
+	actionPointController := controllers.NewActionPointController(actionPointRepository)
 
 	// Protected routes
 	r.Group(func(r chi.Router) {
@@ -83,16 +89,31 @@ func main() {
 			r.Delete("/", featureController.Delete)
 		})
 
+		r.Get("/requirements", requirementController.Index)
+		r.Post("/requirements", requirementController.Create)
+		r.Route("/requirements/{id}", func(r chi.Router) {
+			r.Use(middlewares.Uuid)
+			r.Get("/", requirementController.Get)
+			r.Put("/", requirementController.Update)
+			r.Delete("/", requirementController.Delete)
+		})
+
+		r.Get("/action-points", actionPointController.Index)
+		r.Post("/action-points", actionPointController.Create)
+		r.Route("/action-points/{id}", func(r chi.Router) {
+			r.Use(middlewares.Uuid)
+			r.Get("/", actionPointController.Get)
+			r.Put("/", actionPointController.Update)
+			r.Delete("/", actionPointController.Delete)
+		})
+
 		r.Post("/auth/logout", authController.Logout)
 		r.Get("/auth/identity", authController.Identity)
 	})
 
+	// Unprotected routes
 	r.Post("/auth/login", authController.Login)
 	r.Post("/auth/register", authController.Register)
-
-	r.Get("/", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Hello, World!"))
-	})
 
 	http.ListenAndServe(":80", r)
 }
