@@ -65,7 +65,7 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 
 	token, err = a.tokenRepository.Create(data.CreateTokenParams{
 		UserID:    user.ID,
-		Value:     utils.Hash(fmt.Sprintf("%v%d", user.ID, time.Now().UnixMicro())),
+		Value:     utils.Hash(fmt.Sprintf("%v%d%s", user.ID, time.Now().UnixMicro(), utils.RandomString())),
 		ExpiresAt: time.Now().Add(time.Hour * 24 * 30),
 	})
 	if err != nil {
