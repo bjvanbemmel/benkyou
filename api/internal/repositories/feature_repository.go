@@ -33,14 +33,14 @@ func (f *FeatureRepository) CloseConn() error {
 	return f.conn.Conn().Close(f.ctx)
 }
 
-func (f FeatureRepository) Index() ([]data.Sprint, error) {
-	sprints, err := f.queries.ListSprints(f.ctx)
-	return sprints, errors.MapDatabaseError(err)
+func (f FeatureRepository) Index() ([]data.Feature, error) {
+	features, err := f.queries.ListFeatures(f.ctx)
+	return features, errors.MapDatabaseError(err)
 }
 
-func (f FeatureRepository) Get(id uuid.UUID) (data.Sprint, error) {
-	sprint, err := f.queries.GetSprint(f.ctx, id)
-	return sprint, errors.MapDatabaseError(err)
+func (f FeatureRepository) Get(id uuid.UUID) (data.Feature, error) {
+	feature, err := f.queries.GetFeature(f.ctx, id)
+	return feature, errors.MapDatabaseError(err)
 }
 
 func (f FeatureRepository) Create(feature data.CreateFeatureParams) (data.Feature, error) {

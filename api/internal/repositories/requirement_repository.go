@@ -33,14 +33,14 @@ func (r *RequirementRepository) CloseConn() error {
 	return r.conn.Conn().Close(r.ctx)
 }
 
-func (r RequirementRepository) Index() ([]data.Sprint, error) {
-	sprints, err := r.queries.ListSprints(r.ctx)
-	return sprints, errors.MapDatabaseError(err)
+func (r RequirementRepository) Index() ([]data.Requirement, error) {
+	requirements, err := r.queries.ListRequirements(r.ctx)
+	return requirements, errors.MapDatabaseError(err)
 }
 
-func (r RequirementRepository) Get(id uuid.UUID) (data.Sprint, error) {
-	sprint, err := r.queries.GetSprint(r.ctx, id)
-	return sprint, errors.MapDatabaseError(err)
+func (r RequirementRepository) Get(id uuid.UUID) (data.Requirement, error) {
+	requirement, err := r.queries.GetRequirement(r.ctx, id)
+	return requirement, errors.MapDatabaseError(err)
 }
 
 func (r RequirementRepository) Create(requirement data.CreateRequirementParams) (data.Requirement, error) {
