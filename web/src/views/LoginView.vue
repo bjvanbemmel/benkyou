@@ -84,7 +84,7 @@ function login() {
     password: form.value.password.value,
   }).then((res) => {
       tokenStore.set(res?.data?.data?.value);
-      router.push({ name: 'home' });
+      router.push({ name: 'board' });
   }).catch((err) => {
       const message: string = err.response.data.message;
 

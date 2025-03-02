@@ -19,21 +19,21 @@
           <FormTextInput
             :type="TextInputTypes.TEXT"
             :required="true"
-            :error="form.firstName.error"
+            :error="form.first_name.error"
             autocomplete="first_name"
             placeholder="First name"
             class="col-span-2"
-            @input="(val) => form.firstName.value = val"
+            @input="(val) => form.first_name.value = val"
           />
 
           <FormTextInput
             :type="TextInputTypes.TEXT"
             :required="true"
-            :error="form.lastName.error"
+            :error="form.last_name.error"
             autocomplete="last_name"
             placeholder="Last name"
             class="col-span-3"
-            @input="(val) => form.lastName.value = val"
+            @input="(val) => form.last_name.value = val"
           />
         </div>
 
@@ -102,8 +102,8 @@ import { RouterLink } from 'vue-router';
 
 interface Form {
   email: FormValue,
-  firstName: FormValue,
-  lastName: FormValue,
+  first_name: FormValue,
+  last_name: FormValue,
   password: FormValue,
   confirm_password: FormValue,
   accessToken: FormValue,
@@ -113,8 +113,8 @@ const loading: Ref<boolean> = ref(false);
 
 const form: Ref<Form> = ref({
   email: { value: '', error: null },
-  firstName: { value: '', error: null },
-  lastName: { value: '', error: null },
+  first_name: { value: '', error: null },
+  last_name: { value: '', error: null },
   password: { value: '', error: null },
   confirm_password: { value: '', error: null },
   accessToken: { value: '', error: null },
@@ -123,16 +123,16 @@ const form: Ref<Form> = ref({
 function registerAccount() {
   loading.value = true;
   form.value.email.error = null;
-  form.value.firstName.error = null;
-  form.value.lastName.error = null;
+  form.value.first_name.error = null;
+  form.value.last_name.error = null;
   form.value.password.error = null;
   form.value.confirm_password.error = null;
   form.value.accessToken.error = null;
 
   axios.post('/auth/register', {
     email: form.value.email.value,
-    first_name: form.value.firstName.value,
-    last_name: form.value.lastName.value,
+    first_name: form.value.first_name.value,
+    last_name: form.value.last_name.value,
     password: form.value.password.value,
     confirm_password: form.value.confirm_password.value,
     access_token: form.value.accessToken.value,
@@ -151,12 +151,12 @@ function registerAccount() {
       }
 
       if (message.includes('first_name', 0)) {
-        form.value.firstName.error = message;
+        form.value.first_name.error = message;
         return;
       }
 
       if (message.includes('last_name', 0)) {
-        form.value.lastName.error = message;
+        form.value.last_name.error = message;
         return;
       }
 
