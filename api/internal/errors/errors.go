@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log/slog"
 	"net/http"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
@@ -34,6 +35,7 @@ var errorStatusMap map[error]int = map[error]int{
 	ErrInvalidID:             http.StatusBadRequest,
 	ErrInvalidRequest:        http.StatusBadRequest,
 	ErrResourceAlreadyExists: http.StatusConflict,
+	ErrIncorrectAccessToken:  http.StatusBadRequest,
 }
 
 const (
@@ -90,6 +92,18 @@ func Is(err error, target error) bool {
 
 // Returns both the original error and a status code correlated to the given error
 func WithStatusCode(err error) (int, error) {
+	if strings.Contains(err.Error(), "is a required field") {
+		return http.StatusBadRequest, err
+	}
+
+	if strings.Contains(err.Error(), "must be equal to") {
+		return http.StatusBadRequest, err
+	}
+
+	if strings.Contains(err.Error(), "must be a valid") {
+		return http.StatusBadRequest, err
+	}
+
 	return errorStatusMap[err], err
 }
 
