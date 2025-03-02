@@ -53,10 +53,14 @@
 <script setup lang="ts">
 import FormButton from '@/components/FormButton.vue';
 import FormTextInput from '@/components/FormTextInput.vue';
+import router from '@/router';
+import { useTokenStore } from '@/stores/token';
 import { ButtonTypes, TextInputTypes } from '@/types/enums';
 import type { FormValue } from '@/types/interfaces';
 import axios from 'axios';
 import { ref, type Ref } from 'vue';
+
+const tokenStore = useTokenStore();
 
 interface Form {
   email: FormValue,
@@ -78,8 +82,9 @@ function login() {
   axios.post('/auth/login', {
     email: form.value.email.value,
     password: form.value.password.value,
-  }).then(() => {
-
+  }).then((res) => {
+      tokenStore.set(res?.data?.data?.value);
+      router.push({ name: 'home' });
   }).catch((err) => {
       const message: string = err.response.data.message;
 

@@ -9,8 +9,8 @@ import axios from 'axios';
 
 const app = createApp(App);
 
-app.use(createPinia());
 app.use(router);
+app.use(createPinia());
 
 axios.defaults.baseURL = import.meta.env.VITE_API_URL
 
