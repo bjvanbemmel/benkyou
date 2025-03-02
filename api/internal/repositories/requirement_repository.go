@@ -11,7 +11,7 @@ import (
 )
 
 type RequirementRepository struct {
-	conn    *pgxpool.Conn
+	conn    *pgxpool.Pool
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -27,10 +27,6 @@ func NewRequirementRepository(ctx context.Context) (RequirementRepository, error
 		ctx:     ctx,
 		queries: data.New(conn),
 	}, nil
-}
-
-func (r *RequirementRepository) CloseConn() error {
-	return r.conn.Conn().Close(r.ctx)
 }
 
 func (r RequirementRepository) Index() ([]data.Requirement, error) {

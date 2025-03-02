@@ -11,7 +11,7 @@ import (
 )
 
 type TokenRepository struct {
-	conn    *pgxpool.Conn
+	conn    *pgxpool.Pool
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -27,10 +27,6 @@ func NewTokenRepository(ctx context.Context) (TokenRepository, error) {
 		ctx:     ctx,
 		queries: data.New(conn),
 	}, nil
-}
-
-func (t TokenRepository) CloseConn() error {
-	return t.conn.Conn().Close(t.ctx)
 }
 
 func (t TokenRepository) Index() ([]data.Token, error) {

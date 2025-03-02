@@ -11,7 +11,7 @@ import (
 )
 
 type FeatureRepository struct {
-	conn    *pgxpool.Conn
+	conn    *pgxpool.Pool
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -27,10 +27,6 @@ func NewFeatureRepository(ctx context.Context) (FeatureRepository, error) {
 		ctx:     ctx,
 		queries: data.New(conn),
 	}, nil
-}
-
-func (f *FeatureRepository) CloseConn() error {
-	return f.conn.Conn().Close(f.ctx)
 }
 
 func (f FeatureRepository) Index() ([]data.Feature, error) {

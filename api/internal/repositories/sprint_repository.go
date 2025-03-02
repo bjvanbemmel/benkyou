@@ -11,7 +11,7 @@ import (
 )
 
 type SprintRepository struct {
-	conn    *pgxpool.Conn
+	conn    *pgxpool.Pool
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -27,10 +27,6 @@ func NewSprintRepository(ctx context.Context) (SprintRepository, error) {
 		ctx:     ctx,
 		queries: data.New(conn),
 	}, nil
-}
-
-func (s *SprintRepository) CloseConn() error {
-	return s.conn.Conn().Close(s.ctx)
 }
 
 func (s SprintRepository) Index() ([]data.Sprint, error) {

@@ -11,7 +11,7 @@ import (
 )
 
 type UserRepository struct {
-	conn    *pgxpool.Conn
+	conn    *pgxpool.Pool
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -27,10 +27,6 @@ func NewUserRepository(ctx context.Context) (UserRepository, error) {
 		ctx:     ctx,
 		queries: data.New(conn),
 	}, nil
-}
-
-func (u *UserRepository) CloseConn() error {
-	return u.conn.Conn().Close(u.ctx)
 }
 
 func (u UserRepository) Index() ([]data.ListUsersRow, error) {

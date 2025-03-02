@@ -11,7 +11,7 @@ import (
 )
 
 type ActionPointRepository struct {
-	conn    *pgxpool.Conn
+	conn    *pgxpool.Pool
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -27,10 +27,6 @@ func NewActionPointRepository(ctx context.Context) (ActionPointRepository, error
 		ctx:     ctx,
 		queries: data.New(conn),
 	}, nil
-}
-
-func (a *ActionPointRepository) CloseConn() error {
-	return a.conn.Conn().Close(a.ctx)
 }
 
 func (a ActionPointRepository) Index() ([]data.ActionPoint, error) {

@@ -8,7 +8,7 @@ import (
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-func New(ctx context.Context) (*pgxpool.Conn, error) {
+func New(ctx context.Context) (*pgxpool.Pool, error) {
 	conn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s sslmode=disable",
 		os.Getenv("POSTGRES_HOST"),
@@ -27,7 +27,5 @@ func New(ctx context.Context) (*pgxpool.Conn, error) {
 		return nil, err
 	}
 
-	db, err := pool.Acquire(ctx)
-
-	return db, err
+	return pool, err
 }
