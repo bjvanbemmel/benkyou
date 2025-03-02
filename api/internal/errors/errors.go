@@ -20,6 +20,7 @@ var (
 	ErrInvalidID             = errors.New("invalid id")
 	ErrInvalidRequest        = errors.New("invalid request body")
 	ErrResourceAlreadyExists = errors.New("resource already exists")
+	ErrIncorrectAccessToken  = errors.New("given access token is incorrect")
 )
 
 var errorStatusMap map[error]int = map[error]int{

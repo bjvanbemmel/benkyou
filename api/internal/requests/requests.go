@@ -80,23 +80,26 @@ func IsValidDateTimeFormat(fl validator.FieldLevel) bool {
 
 // PUT /users/{id}
 type UserUpdateRequest struct {
-	Email           string `json:"email" validate:"required,email"`
-	Username        string `json:"username" validate:"required,min=3,max=30"`
+	Email           string `json:"email" validate:"required,email,max=255"`
+	FirstName       string `json:"first_name" validate:"required,min=1,max=50"`
+	LastName        string `json:"last_name" validate:"required,min=1,max=100"`
 	Password        string `json:"password" validate:"required,min=8,max=255"`
 	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
 }
 
 // POST /auth/register
 type AuthRegisterRequest struct {
-	Email           string `json:"email" validate:"required,email"`
-	Username        string `json:"username" validate:"required,min=3,max=30"`
+	Email           string `json:"email" validate:"required,email,max=255"`
+	FirstName       string `json:"first_name" validate:"required,min=1,max=50"`
+	LastName        string `json:"last_name" validate:"required,min=1,max=100"`
 	Password        string `json:"password" validate:"required,min=8,max=255"`
 	ConfirmPassword string `json:"confirm_password" validate:"required,eqfield=Password"`
+	AccessToken     string `json:"access_token" validate:"required,min=1,max=255"`
 }
 
 // POST /auth/login
 type AuthLoginRequest struct {
-	Username string `json:"username" validate:"required,max=30"`
+	Email    string `json:"email" validate:"required,email,max=255"`
 	Password string `json:"password" validate:"required,max=255"`
 }
 

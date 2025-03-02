@@ -48,9 +48,9 @@ func (u UserRepository) GetWithPassword(id uuid.UUID) (data.User, error) {
 	return user, errors.MapDatabaseError(err)
 }
 
-func (u UserRepository) GetUserWithPasswordByUsername(username string) (data.User, error) {
-	user, err := u.queries.GetUserWithPasswordByUsername(u.ctx, username)
-	return user, errors.MapDatabaseError(err)
+func (u UserRepository) GetWithPasswordByEmail(email string) (data.User, error) {
+	user, err := u.queries.GetUserWithPasswordByEmail(u.ctx, email)
+	return user, err
 }
 
 func (u UserRepository) Create(user data.CreateUserParams) (data.CreateUserRow, error) {

@@ -2,12 +2,14 @@ package main
 
 import (
 	"context"
+	"log/slog"
 	"net/http"
 	"time"
 
 	"github.com/bjvanbemmel/benkyou/internal/controllers"
 	"github.com/bjvanbemmel/benkyou/internal/middlewares"
 	"github.com/bjvanbemmel/benkyou/internal/repositories"
+	"github.com/bjvanbemmel/benkyou/internal/utils"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 	"github.com/go-chi/cors"
@@ -114,6 +116,10 @@ func main() {
 	// Unprotected routes
 	r.Post("/auth/login", authController.Login)
 	r.Post("/auth/register", authController.Register)
+
+	// Generate random access token for session
+	utils.NewAccessToken()
+	slog.Info("Access token has been generated for the current session.", "token", utils.AccessToken)
 
 	http.ListenAndServe(":80", r)
 }

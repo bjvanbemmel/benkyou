@@ -38,7 +38,7 @@ func (a AuthController) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := a.userRepository.GetUserWithPasswordByUsername(req.Username)
+	user, err := a.userRepository.GetWithPasswordByEmail(req.Email)
 	if err != nil {
 		response.NewError(w, errors.ErrInvalidCredentials)
 		return
@@ -83,13 +83,19 @@ func (a AuthController) Register(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.AccessToken != utils.AccessToken {
+		response.NewError(w, errors.ErrIncorrectAccessToken)
+		return
+	}
+
 	salt := utils.RandomString()
 	saltedPassword := req.Password + salt
 
 	user, err := a.userRepository.Create(data.CreateUserParams{
-		Email:    req.Email,
-		Username: req.Username,
-		Password: fmt.Sprintf("%d$%x$%s", HASH_ALGORITHM_VERSION, sha256.Sum256([]byte(saltedPassword)), salt),
+		Email:     req.Email,
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+		Password:  fmt.Sprintf("%d$%x$%s", HASH_ALGORITHM_VERSION, sha256.Sum256([]byte(saltedPassword)), salt),
 	})
 	if err != nil {
 		response.NewError(w, err)

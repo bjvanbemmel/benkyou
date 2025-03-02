@@ -61,10 +61,11 @@ func (u UserController) Update(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user, err := u.repository.Update(data.UpdateUserParams{
-		ID:       id,
-		Email:    req.Email,
-		Username: req.Username,
-		Password: fmt.Sprintf("%x", sha256.Sum256([]byte(req.Password))),
+		ID:        id,
+		Email:     req.Email,
+		FirstName: req.FirstName,
+		LastName:  req.LastName,
+		Password:  fmt.Sprintf("%x", sha256.Sum256([]byte(req.Password))),
 	})
 	if err != nil {
 		response.NewError(w, err)
