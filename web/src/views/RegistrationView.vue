@@ -80,7 +80,7 @@
           <FormButton
             class="w-full"
             :submit="true"
-            :type="ButtonTypes.SECUNDARY"
+            :type="ButtonTypes.SECONDARY"
           >
             I already have an account
           </FormButton>
@@ -101,12 +101,12 @@ import { ref, type Ref } from 'vue';
 import { RouterLink } from 'vue-router';
 
 interface Form {
-  email: FormValue,
-  first_name: FormValue,
-  last_name: FormValue,
-  password: FormValue,
-  confirm_password: FormValue,
-  accessToken: FormValue,
+  email: FormValue<string>,
+  first_name: FormValue<string>,
+  last_name: FormValue<string>,
+  password: FormValue<string>,
+  confirm_password: FormValue<string>,
+  accessToken: FormValue<string>,
 }
 
 const loading: Ref<boolean> = ref(false);

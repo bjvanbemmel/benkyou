@@ -7,11 +7,11 @@ import (
 	"github.com/bjvanbemmel/benkyou/internal/database"
 	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5"
 )
 
 type ActionPointRepository struct {
-	conn    *pgxpool.Pool
+	conn    *pgx.Conn
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -27,6 +27,10 @@ func NewActionPointRepository(ctx context.Context) (ActionPointRepository, error
 		ctx:     ctx,
 		queries: data.New(conn),
 	}, nil
+}
+
+func (a ActionPointRepository) Close() {
+	a.conn.Close(a.ctx)
 }
 
 func (a ActionPointRepository) Index() ([]data.ActionPoint, error) {

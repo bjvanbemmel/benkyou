@@ -7,11 +7,11 @@ import (
 	"github.com/bjvanbemmel/benkyou/internal/database"
 	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5"
 )
 
 type SprintRepository struct {
-	conn    *pgxpool.Pool
+	conn    *pgx.Conn
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -27,6 +27,10 @@ func NewSprintRepository(ctx context.Context) (SprintRepository, error) {
 		ctx:     ctx,
 		queries: data.New(conn),
 	}, nil
+}
+
+func (s SprintRepository) Close() {
+	s.conn.Close(s.ctx)
 }
 
 func (s SprintRepository) Index() ([]data.Sprint, error) {

@@ -7,7 +7,7 @@
         :placeholder="props.placeholder"
         :required="props.required"
         autocomplete="props.autocomplete"
-        class="w-full focus:outline-1 focus:outline-zinc-400 p-2 bg-zinc-700 rounded-md text-sm text-zinc-100"
+        class="w-full focus:outline-1 focus:outline-zinc-400 p-2 bg-zinc-700 rounded-md text-sm text-zinc-100 border-1 border-zinc-500"
         :class="{
           'pr-8': props.type === TextInputTypes.PASSWORD,
           'border-1 border-red-400': props.error,
@@ -60,7 +60,7 @@ const value: Ref<string> = ref('');
 const exposed: Ref<boolean> = ref(false);
 
 const emit = defineEmits<{
-  (e: 'input', value: string): void,
+  (e: 'input', value: any): void,
   (e: 'blur'): void,
 }>();
 

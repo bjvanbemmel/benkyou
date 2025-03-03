@@ -1,7 +1,7 @@
 <template>
-  <div class="h-screen">
+  <div class="absolute h-screen">
     <div
-      class="flex w-min flex-col p-3 h-full bg-zinc-800 border-r-1 border-zinc-700"
+      class="flex w-15 flex-col p-3 h-full bg-zinc-800 border-r-1 border-zinc-700"
     >
       <nav
         class="flex gap-4 w-full justify-start items-center flex-col"
@@ -11,35 +11,32 @@
         >
           <div>
             <button
-              class="hover:cursor-pointer bg-blue-400 font-bold p-1.5 rounded-full"
+              class="hover:cursor-pointer bg-blue-400 font-bold w-9 h-9 flex justify-center items-center rounded-full"
               @click="userDropdownVisible = !userDropdownVisible"
             >
               {{ userInitials }}
             </button>
           </div>
-          <OnClickOutside
+          <div
             v-if="userDropdownVisible"
-            @trigger="() => userDropdownVisible = false"
+            v-on-click-outside="() => userDropdownVisible = false"
+            class="flex flex-col w-min absolute bg-zinc-700 border-1 border-zinc-400 top-8 left-0 rounded-md"
           >
-            <div
-              class="flex flex-col w-min absolute bg-zinc-700 border-1 border-zinc-400 top-8 left-0 rounded-md"
-            >
-              <div class="px-2 py-1 text-zinc-300 w-max">
-                <p>{{ userStore.user?.first_name }} {{ userStore.user?.last_name }}</p>
-                <p class="text-xs text-zinc-400">{{ userStore.user?.email }}</p>
-              </div>
-              <div class="w-full border-b-1 border-zinc-500"></div>
-              <button
-                class="flex items-center gap-2 text-white w-full hover:cursor-pointer hover:bg-zinc-800 rounded-md px-2 py-1"
-                @click="logout"
-              >
-                <ArrowLeftEndOnRectangleIcon
-                  class="h-5 aspect-square"
-                />
-                Logout
-              </button>
+            <div class="px-2 py-1 text-zinc-300 w-max">
+              <p>{{ userStore.user?.first_name }} {{ userStore.user?.last_name }}</p>
+              <p class="text-xs text-zinc-400">{{ userStore.user?.email }}</p>
             </div>
-          </OnClickOutside>
+            <div class="w-full border-b-1 border-zinc-500"></div>
+            <button
+              class="flex items-center gap-2 text-white w-full hover:cursor-pointer hover:bg-zinc-800 rounded-md px-2 py-1"
+              @click="logout"
+            >
+              <ArrowLeftEndOnRectangleIcon
+                class="h-5 aspect-square"
+              />
+              Logout
+            </button>
+          </div>
         </div>
         <div class="w-full border-b-1 border-zinc-500"></div>
         <div class="group flex justify-center w-full">
@@ -87,7 +84,7 @@
 import { useUserStore } from '@/stores/user';
 import { ArrowLeftEndOnRectangleIcon, CalendarDateRangeIcon, ChatBubbleLeftRightIcon, DocumentCheckIcon, RectangleStackIcon } from '@heroicons/vue/24/outline';
 import { computed, ref, type ComputedRef, type Ref } from 'vue';
-import { OnClickOutside } from '@vueuse/components';
+import { vOnClickOutside } from '@vueuse/components';
 import { useTokenStore } from '@/stores/token';
 import router from '@/router';
 

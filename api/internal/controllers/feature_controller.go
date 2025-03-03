@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"net/http"
-	"strconv"
 
 	"github.com/bjvanbemmel/benkyou/internal/data"
 	"github.com/bjvanbemmel/benkyou/internal/repositories"
@@ -79,11 +78,10 @@ func (f FeatureController) Create(w http.ResponseWriter, r *http.Request) {
 	var userId pgtype.UUID
 	userId.Scan(req.UserID)
 
-	state, _ := strconv.Atoi(req.State)
 	feature, err := f.featureRepository.Create(data.CreateFeatureParams{
 		UserID:      userId,
 		SprintID:    sprintId,
-		State:       int32(state),
+		State:       req.State,
 		Title:       req.Title,
 		Description: req.Description,
 	})
@@ -124,12 +122,11 @@ func (f FeatureController) Update(w http.ResponseWriter, r *http.Request) {
 	var sprintId pgtype.UUID
 	sprintId.Scan(req.SprintID)
 
-	state, _ := strconv.Atoi(req.State)
 	feature, err := f.featureRepository.Update(data.UpdateFeatureParams{
 		ID:          id,
 		UserID:      userId,
 		SprintID:    sprintId,
-		State:       int32(state),
+		State:       req.State,
 		Title:       req.Title,
 		Description: req.Description,
 	})

@@ -33,26 +33,37 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+	defer userRepository.Close()
+
 	tokenRepository, err := repositories.NewTokenRepository(context.Background())
 	if err != nil {
 		panic(err)
 	}
+	defer tokenRepository.Close()
+
 	sprintRepository, err := repositories.NewSprintRepository(context.Background())
 	if err != nil {
 		panic(err)
 	}
+	defer sprintRepository.Close()
+
 	featureRepository, err := repositories.NewFeatureRepository(context.Background())
 	if err != nil {
 		panic(err)
 	}
+	defer featureRepository.Close()
+
 	requirementRepository, err := repositories.NewRequirementRepository(context.Background())
 	if err != nil {
 		panic(err)
 	}
+	defer requirementRepository.Close()
+
 	actionPointRepository, err := repositories.NewActionPointRepository(context.Background())
 	if err != nil {
 		panic(err)
 	}
+	defer actionPointRepository.Close()
 
 	// Add controllers
 	userController := controllers.NewUserController(userRepository)

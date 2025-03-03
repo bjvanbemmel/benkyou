@@ -1,10 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
-import RegistrationView from '@/views/RegistrationView.vue'
-import LoginView from '@/views/LoginView.vue'
 import { useTokenStore } from '@/stores/token';
 import axios from 'axios';
 import { useUserStore } from '@/stores/user';
+import RegistrationView from '@/views/RegistrationView.vue'
+import LoginView from '@/views/LoginView.vue'
+import BacklogView from '@/views/BacklogView.vue';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -26,22 +26,22 @@ const router = createRouter({
     {
       path: '/backlog',
       name: 'backlog',
-      component: HomeView,
+      component: BacklogView,
     },
     {
       path: '/sprints',
       name: 'sprints',
-      component: HomeView,
+      component: BacklogView,
     },
     {
       path: '/board',
       name: 'board',
-      component: HomeView,
+      component: BacklogView,
     },
     {
       path: '/braindump',
       name: 'braindump',
-      component: HomeView,
+      component: BacklogView,
     },
     {
       path: '/:pathMatch(.*)*',
@@ -64,12 +64,16 @@ async function isAuthenticated(): Promise<boolean> {
   const tokenStore = useTokenStore();
   const token = tokenStore.token ?? tokenStore.get();
 
+  if (token === null) return false;
+
   try {
     let response = await axios.get('/auth/identity', {
       headers: {
         Authorization: `Bearer ${token}`,
       }
     });
+
+    tokenStore.set(token);
 
     const userStore = useUserStore();
     userStore.set(response.data.data);

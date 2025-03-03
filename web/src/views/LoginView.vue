@@ -40,7 +40,7 @@
           <FormButton
             class="w-full"
             :submit="true"
-            :type="ButtonTypes.SECUNDARY"
+            :type="ButtonTypes.SECONDARY"
           >
             I don't have an account yet
           </FormButton>
@@ -63,8 +63,8 @@ import { ref, type Ref } from 'vue';
 const tokenStore = useTokenStore();
 
 interface Form {
-  email: FormValue,
-  password: FormValue,
+  email: FormValue<string>,
+  password: FormValue<string>,
 }
 
 const form: Ref<Form> = ref({

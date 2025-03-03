@@ -7,11 +7,11 @@ import (
 	"github.com/bjvanbemmel/benkyou/internal/database"
 	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5"
 )
 
 type FeatureRepository struct {
-	conn    *pgxpool.Pool
+	conn    *pgx.Conn
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -27,6 +27,10 @@ func NewFeatureRepository(ctx context.Context) (FeatureRepository, error) {
 		ctx:     ctx,
 		queries: data.New(conn),
 	}, nil
+}
+
+func (f FeatureRepository) Close() {
+	f.conn.Close(f.ctx)
 }
 
 func (f FeatureRepository) Index() ([]data.Feature, error) {

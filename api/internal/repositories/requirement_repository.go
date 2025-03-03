@@ -7,11 +7,11 @@ import (
 	"github.com/bjvanbemmel/benkyou/internal/database"
 	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/jackc/pgx/v5"
 )
 
 type RequirementRepository struct {
-	conn    *pgxpool.Pool
+	conn    *pgx.Conn
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -27,6 +27,10 @@ func NewRequirementRepository(ctx context.Context) (RequirementRepository, error
 		ctx:     ctx,
 		queries: data.New(conn),
 	}, nil
+}
+
+func (r RequirementRepository) Close() {
+	r.conn.Close(r.ctx)
 }
 
 func (r RequirementRepository) Index() ([]data.Requirement, error) {

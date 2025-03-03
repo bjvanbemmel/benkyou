@@ -121,7 +121,7 @@ type SprintUpdateRequest struct {
 type FeatureCreateRequest struct {
 	UserID      string `json:"user_id" validate:"omitempty,uuid"`
 	SprintID    string `json:"sprint_id" validate:"omitempty,uuid"`
-	State       string `json:"state" validate:"required,number"`
+	State       int32  `json:"state" validate:"number"`
 	Title       string `json:"title" validate:"required,max=255"`
 	Description string `json:"description"`
 }
@@ -130,7 +130,7 @@ type FeatureCreateRequest struct {
 type FeatureUpdateRequest struct {
 	UserID      string `json:"user_id" validate:"omitempty,uuid"`
 	SprintID    string `json:"sprint_id" validate:"omitempty,uuid"`
-	State       string `json:"state" validate:"required,number"`
+	State       int32  `json:"state" validate:"number"`
 	Title       string `json:"title" validate:"required,max=255"`
 	Description string `json:"description"`
 }
@@ -140,7 +140,7 @@ type RequirementCreateRequest struct {
 	UserID      string `json:"user_id" validate:"omitempty,uuid"`
 	SprintID    string `json:"sprint_id" validate:"omitempty,uuid"`
 	FeatureID   string `json:"feature_id" validate:"omitempty,uuid"`
-	State       string `json:"state" validate:"required,number"`
+	State       int32  `json:"state" validate:"number"`
 	Title       string `json:"title" validate:"required,max=255"`
 	Estimate    string `json:"estimate" validate:"omitempty,number"`
 	Description string `json:"description"`
@@ -151,7 +151,7 @@ type RequirementUpdateRequest struct {
 	UserID      string `json:"user_id" validate:"omitempty,uuid"`
 	SprintID    string `json:"sprint_id" validate:"omitempty,uuid"`
 	FeatureID   string `json:"feature_id" validate:"omitempty,uuid"`
-	State       string `json:"state" validate:"required,number"`
+	State       int32  `json:"state" validate:"number"`
 	Title       string `json:"title" validate:"required,max=255"`
 	Estimate    string `json:"estimate" validate:"omitempty,number"`
 	Description string `json:"description"`
