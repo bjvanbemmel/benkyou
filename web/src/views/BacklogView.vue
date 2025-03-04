@@ -272,7 +272,7 @@ const requirements: Ref<Requirement[]> = ref([]);
 const users: Ref<User[]> = ref([]);
 
 const featureCollapseToggles: Ref<{ id: string, enabled: boolean }[]> = ref(
-  JSON.parse(window.localStorage.getItem('backlog_feature_collapse_toggles') ?? '') ?? []
+  JSON.parse(window.localStorage.getItem('backlog_feature_collapse_toggles') ?? '[]') ?? []
 );
 
 const route = useRoute();
