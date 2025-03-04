@@ -12,9 +12,8 @@
           'pr-8': props.type === TextInputTypes.PASSWORD,
           'border-1 border-red-400': props.error,
         }"
-        v-model="value"
+        v-model="model"
         @blur="emit('blur')"
-        @input="emit('input', value)"
       />
 
       <button
@@ -56,7 +55,7 @@ import { TextInputTypes } from '@/types/enums';
 import { EyeSlashIcon, EyeIcon } from '@heroicons/vue/20/solid';
 import { ref, type Ref } from 'vue';
 
-const value: Ref<string> = ref('');
+const model = defineModel();
 const exposed: Ref<boolean> = ref(false);
 
 const emit = defineEmits<{
@@ -71,6 +70,7 @@ const props = withDefaults(defineProps<{
   label?: string,
   required?: boolean,
   autocomplete?: string,
+  value?: string,
   error?: string | null,
 }>(), {
     id: () => window.crypto.randomUUID(),

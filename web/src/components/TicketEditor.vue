@@ -35,7 +35,7 @@
       >
         <FormTextInput
           :type="TextInputTypes.TEXT"
-          @input="(v) => form.title.value = v"
+          v-model="form.title.value"
           :error="form.title.error"
           :required="true"
           placeholder="Title"
@@ -149,7 +149,7 @@
             v-on-click-outside="() => featureDropdownVisible = false"
           >
             <button
-              class="flex items-center justify-between w-full border-zinc-500 gap-3 bg-zinc-700 p-2 text-sm hover:bg-zinc-800 hover:cursor-pointer"
+              class="flex items-center justify-between text-left leading-none overflow-overflow text-ellipsis items-center gap-3 w-full p-2 text-sm bg-zinc-700 border-x-1 border-t-1 last:rounded-b-md border-zinc-500 hover:cursor-pointer hover:bg-zinc-800"
               :class="featureDropdownVisible ? 'border-x-1 border-t-1 rounded-t-md' : 'border-1 rounded-md'"
               @click="featureDropdownVisible = !featureDropdownVisible"
             >
@@ -157,10 +157,13 @@
                 class="flex items-center gap-3"
                 v-if="currentDropdownFeature"
               >
-                <ClipboardDocumentListIcon
-                  class="h-5 aspect-square text-red-400"
-                />
-                {{ currentDropdownFeature.title }}
+                <div class="flex gap-2 items-center">
+                  <ClipboardDocumentListIcon
+                    class="h-5 aspect-square text-red-400"
+                  />
+                  <span class="text-xs text-zinc-400">#{{ currentDropdownFeature.external_id }}</span>
+                </div>
+                <p class="line-clamp-1">{{ currentDropdownFeature.title }}</p>
               </div>
               <div
                 class="flex items-center gap-3"
@@ -181,7 +184,7 @@
               />
             </button>
             <div
-              class="z-5 w-full absolute overflow-scroll h-32 rounded-b-md border-b-1 border-zinc-500"
+              class="z-5 w-full absolute overflow-scroll max-h-96 rounded-b-md border-b-1 border-zinc-500"
               v-if="featureDropdownVisible"
             >
               <button
@@ -198,21 +201,24 @@
                 v-if="featureDropdownVisible"
                 v-for="feature, i in dropdownFeatures"
                 :key="i"
-                class="flex items-center gap-3 w-full p-2 text-sm bg-zinc-700 border-x-1 border-t-1 last:rounded-b-md border-zinc-500 hover:cursor-pointer hover:bg-zinc-800"
-                :title="feature.id"
+                class="flex text-left leading-none overflow-overflow text-ellipsis items-center gap-3 w-full p-2 text-sm bg-zinc-700 border-x-1 border-t-1 last:rounded-b-md border-zinc-500 hover:cursor-pointer hover:bg-zinc-800"
+                :title="feature.title"
                 @click="setFeature(feature)"
               >
-                <ClipboardDocumentListIcon
-                  class="h-5 aspect-square text-red-400"
-                />
-                {{ feature.title }}
+                <div class="flex gap-2 items-center">
+                  <ClipboardDocumentListIcon
+                    class="h-5 aspect-square text-red-400"
+                  />
+                  <span class="text-xs text-zinc-400">#{{ feature.external_id }}</span>
+                </div>
+                <p class="line-clamp-2">{{ feature.title }}</p>
               </button>
             </div>
           </div>
           <div class="col-span-2">
             <FormTextInput
               :type="TextInputTypes.NUMERICAL"
-              @input="(v) => form.estimate.value = v as number"
+              v-model="form.estimate.value"
               placeholder="Estimate"
             />
           </div>
@@ -220,11 +226,11 @@
         <div class="max-h-72 overflow-scroll">
           <InkMde
             v-model="form.description.value"
-            class="bg-zinc-700 rounded-md"
+            class="overflow-none bg-zinc-700 rounded-md"
             style="-ink-internal-syntax-processing-instruction-color: rgb(255, 0, 0);"
             :options="{
               interface: {
-                toolbar: true,
+                appearance: 'dark',
               }
             }"
           />
@@ -238,10 +244,18 @@
           >Cancel</FormButton>
 
           <FormButton
+            v-if="props.ticket && props.update"
+            :type="ButtonTypes.PRIMARY"
+            class="w-full"
+            @click="props.type === EditorTypes.FEATURE ? updateFeature() : updateRequirement()"
+          >Save changes</FormButton>
+
+          <FormButton
+            v-else
             :type="ButtonTypes.PRIMARY"
             class="w-full"
             @click="props.type === EditorTypes.FEATURE ? createFeature() : createRequirement()"
-          >Save</FormButton>
+          >Create</FormButton>
         </div>
       </form>
     </div>
@@ -259,6 +273,7 @@ import { ChevronDownIcon, ChevronUpIcon, UserCircleIcon, XMarkIcon } from '@hero
 import { ClipboardDocumentListIcon, DocumentPlusIcon } from '@heroicons/vue/24/outline';
 import InkMde from 'ink-mde/vue';
 import FormButton from './FormButton.vue';
+import router from '@/router';
 
 const assigneeDropdownVisible: Ref<boolean> = ref(false);
 const assigneeDropdownUsers: Ref<User[]> = ref([]);
@@ -274,6 +289,17 @@ const stateDropdownStates: Ref<States[]> = ref([
 const featureDropdownVisible: Ref<boolean> = ref(false);
 const featureDropdownFeatures: Ref<Feature[]> = ref([]);
 
+const emit = defineEmits<{
+  (e: 'exit' ): void,
+  (e: 'finish', value: Feature | Requirement): void,
+}>();
+
+const props = defineProps<{
+  type: EditorTypes,
+  update?: boolean,
+  ticket?: Feature | Requirement | null,
+}>();
+
 interface Form {
   user_id: FormValue<string>,
   feature_id: FormValue<string>,
@@ -282,39 +308,58 @@ interface Form {
   title: FormValue<string>,
   estimate: FormValue<number>,
   description: FormValue<string>,
+  position: FormValue<number>,
 }
 
 const form: Ref<Form> = ref({
-  user_id: { value: '', error: null },
+  user_id: { value: props.ticket?.user_id ?? '', error: null },
   feature_id: { value: '', error: null },
   sprint_id: { value: '', error: null },
   state: { value: States.PROPOSED, error: null },
   title: { value: '', error: null },
   estimate: { value: 1, error: null },
   description: { value: '', error: null },
+  position: { value: 0, error: null },
 });
 
 onMounted(async () => {
+  if (props.ticket && props.update) {
+    router.push({ query: { ticketId: props.ticket.id, ticketType: props.type} });
+  }
+
   axios.get<Response<User[]>>('/users')
     .then((res) => assigneeDropdownUsers.value = res.data.data);
 
   if (props.type === EditorTypes.REQUIREMENT) {
     axios.get<Response<Feature[]>>('/features')
       .then((res) => {
-        console.log(res.data.data);
         featureDropdownFeatures.value = res.data.data.sort(x => new Date(x.created_at).getMilliseconds());
       });
   }
+
+  if (props.ticket === null) return;
+
+  if (props.type === EditorTypes.FEATURE) {
+    const feature: Feature = props.ticket as Feature;
+    form.value.user_id.value = feature.user_id;
+    form.value.sprint_id.value = feature.sprint_id;
+    form.value.state.value = feature.state;
+    form.value.title.value = feature.title;
+    form.value.description.value = feature.description;
+    form.value.position.value = feature.position;
+  }
+
+  if (props.type === EditorTypes.REQUIREMENT) {
+    const requirement: Requirement = props.ticket as Requirement;
+    form.value.user_id.value = requirement.user_id;
+    form.value.sprint_id.value = requirement.sprint_id;
+    form.value.feature_id.value = requirement.feature_id;
+    form.value.state.value = requirement.state;
+    form.value.title.value = requirement.title;
+    form.value.description.value = requirement.description;
+    form.value.position.value = requirement.position;
+  }
 })
-
-const emit = defineEmits<{
-  (e: 'exit' ): void,
-  (e: 'finish', value: Feature | Requirement): void,
-}>();
-
-const props = defineProps<{
-  type: EditorTypes,
-}>();
 
 const currentDropdownUser: ComputedRef<User | null> = computed(() => {
   return assigneeDropdownUsers.value.find(x => x.id === form.value.user_id.value) ?? null;
@@ -375,12 +420,56 @@ function translateState(state: States): string {
   }
 }
 
-function createFeature(): void {
+function validateForm(message: string): void {
   form.value.user_id.error = null;
   form.value.sprint_id.error = null;
+  form.value.feature_id.error = null;
   form.value.state.error = null;
   form.value.title.error = null;
+  form.value.estimate.error = null;
   form.value.description.error = null;
+  form.value.position.error = null;
+
+    if (message.includes('title')) {
+      form.value.title.error = message;
+      return
+    }
+
+    if (message.includes('user_id')) {
+      form.value.user_id.error = message;
+    }
+
+    if (message.includes('sprint_id')) {
+      form.value.sprint_id.error = message;
+    }
+
+    if (message.includes('feature_id')) {
+      form.value.feature_id.error = message;
+    }
+
+    if (message.includes('state')) {
+      form.value.state.error = message;
+      return;
+    }
+
+    if (message.includes('estimate')) {
+      form.value.estimate.error = message;
+      return;
+    }
+
+    if (message.includes('description')) {
+      form.value.description.error = message;
+      return;
+    }
+
+    if (message.includes('resource not found')) {
+      form.value.user_id.error = message;
+      form.value.sprint_id.error = message;
+      return
+    }
+}
+
+function createFeature(): void {
 
   axios.post<Response<Feature>>('/features', {
     user_id: form.value.user_id.value,
@@ -394,46 +483,29 @@ function createFeature(): void {
     })
     .catch((err) => {
       const message: string = err.response.data.message;
+      validateForm(message);
+    });
+}
 
-      if (message.includes('title')) {
-        form.value.title.error = message;
-        return
-      }
-
-      if (message.includes('user_id')) {
-        form.value.user_id.error = message;
-      }
-
-      if (message.includes('sprint_id')) {
-        form.value.sprint_id.error = message;
-      }
-
-      if (message.includes('state')) {
-        form.value.state.error = message;
-        return;
-      }
-
-      if (message.includes('description')) {
-        form.value.description.error = message;
-        return;
-      }
-
-      if (message.includes('resource not found')) {
-        form.value.user_id.error = message;
-        form.value.sprint_id.error = message;
-        return
-      }
+function updateFeature(): void {
+  axios.put<Response<Feature>>(`/features/${props.ticket?.id}`, {
+    user_id: form.value.user_id.value,
+    sprint_id: form.value.sprint_id.value,
+    state: form.value.state.value,
+    title: form.value.title.value,
+    description: form.value.description.value,
+    position: form.value.position.value,
+  })
+    .then((res) => {
+      emit('finish', res.data.data);
+    })
+    .catch((err) => {
+      const message: string = err.response.data.message;
+      validateForm(message);
     });
 }
 
 function createRequirement(): void {
-  form.value.user_id.error = null;
-  form.value.feature_id.error = null;
-  form.value.sprint_id.error = null;
-  form.value.state.error = null;
-  form.value.title.error = null;
-  form.value.description.error = null;
-
   axios.post<Response<Requirement>>('/requirements', {
     user_id: form.value.user_id.value,
     sprint_id: form.value.sprint_id.value,
@@ -447,40 +519,27 @@ function createRequirement(): void {
     })
     .catch((err) => {
       const message: string = err.response.data.message;
+      validateForm(message);
+    });
+}
 
-      if (message.includes('title')) {
-        form.value.title.error = message;
-        return
-      }
-
-      if (message.includes('user_id')) {
-        form.value.user_id.error = message;
-      }
-
-      if (message.includes('sprint_id')) {
-        form.value.sprint_id.error = message;
-      }
-
-      if (message.includes('feature_id')) {
-        form.value.feature_id.error = message;
-      }
-
-      if (message.includes('state')) {
-        form.value.state.error = message;
-        return;
-      }
-
-      if (message.includes('description')) {
-        form.value.description.error = message;
-        return;
-      }
-
-      if (message.includes('resource not found')) {
-        form.value.user_id.error = message;
-        form.value.sprint_id.error = message;
-        form.value.feature_id.error = message;
-        return
-      }
+function updateRequirement(): void {
+  axios.put<Response<Requirement>>(`/requirements/${props.ticket?.id}`, {
+    user_id: form.value.user_id.value,
+    sprint_id: form.value.sprint_id.value,
+    feature_id: form.value.feature_id.value,
+    state: form.value.state.value,
+    title: form.value.title.value,
+    description: form.value.description.value,
+    estimate: form.value.estimate.value,
+    position: form.value.position.value,
+  })
+    .then((res) => {
+      emit('finish', res.data.data);
+    })
+    .catch((err) => {
+      const message: string = err.response.data.message;
+      validateForm(message);
     });
 }
 </script>

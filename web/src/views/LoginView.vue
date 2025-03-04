@@ -11,7 +11,7 @@
           :error="form.email.error"
           autocomplete="email"
           placeholder="Email"
-          @input="(val) => form.email.value = val"
+          v-model="form.email.value"
         />
 
         <FormTextInput
@@ -20,7 +20,7 @@
           :error="form.password.error"
           autocomplete="password"
           placeholder="Password"
-          @input="(val) => form.password.value = val"
+          v-model="form.password.value"
         />
 
         <div class="w-full my-2 border-1 border-zinc-600"></div>

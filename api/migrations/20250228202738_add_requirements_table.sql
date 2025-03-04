@@ -2,6 +2,7 @@
 -- +goose StatementBegin
 CREATE TABLE requirements (
   id uuid DEFAULT gen_random_uuid(),
+  external_id SERIAL NOT NULL,
   user_id uuid,
   sprint_id uuid,
   feature_id uuid,
@@ -9,6 +10,7 @@ CREATE TABLE requirements (
   title VARCHAR(255) NOT NULL,
   estimate INT,
   description TEXT,
+  position INT NOT NULL DEFAULT 0,
   created_at TIMESTAMP NOT NULL DEFAULT now(),
   updated_at TIMESTAMP,
 

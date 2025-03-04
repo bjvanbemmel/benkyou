@@ -7,11 +7,11 @@ import (
 	"github.com/bjvanbemmel/benkyou/internal/database"
 	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type TokenRepository struct {
-	conn    *pgx.Conn
+	conn    *pgxpool.Pool
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -30,7 +30,7 @@ func NewTokenRepository(ctx context.Context) (TokenRepository, error) {
 }
 
 func (t TokenRepository) Close() {
-	t.conn.Close(t.ctx)
+	t.conn.Close()
 }
 
 func (t TokenRepository) Index() ([]data.Token, error) {

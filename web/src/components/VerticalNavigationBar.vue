@@ -1,7 +1,7 @@
 <template>
   <div class="absolute h-screen">
     <div
-      class="flex w-15 flex-col p-3 h-full bg-zinc-800 border-r-1 border-zinc-700"
+      class="fixed flex w-15 flex-col p-3 h-full bg-zinc-800 border-r-1 border-zinc-700"
     >
       <nav
         class="flex gap-4 w-full justify-start items-center flex-col"

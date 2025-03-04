@@ -122,13 +122,32 @@ func (f FeatureController) Update(w http.ResponseWriter, r *http.Request) {
 	var sprintId pgtype.UUID
 	sprintId.Scan(req.SprintID)
 
-	feature, err := f.featureRepository.Update(data.UpdateFeatureParams{
+	feature, err := f.featureRepository.Get(id)
+	if err != nil {
+		response.NewError(w, err)
+		return
+	}
+
+	if req.Position < feature.Position {
+		if err := f.featureRepository.IncrementPositionForAllFeaturesBetweenDescending(feature.Position, req.Position); err != nil {
+			response.NewError(w, err)
+			return
+		}
+	} else if req.Position > feature.Position {
+		if err := f.featureRepository.IncrementPositionForAllFeaturesBetweenAscending(feature.Position, req.Position); err != nil {
+			response.NewError(w, err)
+			return
+		}
+	}
+
+	feature, err = f.featureRepository.Update(data.UpdateFeatureParams{
 		ID:          id,
 		UserID:      userId,
 		SprintID:    sprintId,
 		State:       req.State,
 		Title:       req.Title,
 		Description: req.Description,
+		Position:    req.Position,
 	})
 	if err != nil {
 		response.NewError(w, err)

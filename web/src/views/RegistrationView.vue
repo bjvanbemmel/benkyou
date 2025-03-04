@@ -12,7 +12,7 @@
           :error="form.email.error"
           autocomplete="email"
           placeholder="Email"
-          @input="(val) => form.email.value = val"
+          v-model="form.email.value"
         />
 
         <div class="gap-4 grid grid-rows-1 grid-cols-5">
@@ -23,7 +23,7 @@
             autocomplete="first_name"
             placeholder="First name"
             class="col-span-2"
-            @input="(val) => form.first_name.value = val"
+            v-model="form.first_name.value"
           />
 
           <FormTextInput
@@ -33,7 +33,7 @@
             autocomplete="last_name"
             placeholder="Last name"
             class="col-span-3"
-            @input="(val) => form.last_name.value = val"
+            v-model="form.last_name.value"
           />
         </div>
 
@@ -43,7 +43,7 @@
           :error="form.password.error"
           autocomplete="password"
           placeholder="Password"
-          @input="(val) => form.password.value = val"
+          v-model="form.password.value"
         />
 
         <FormTextInput
@@ -51,16 +51,16 @@
           :required="true"
           :error="form.confirm_password.error"
           placeholder="Confirm password"
-          @input="(val) => form.confirm_password.value = val"
+          v-model="form.confirm_password.value"
         />
 
         <FormTextInput
           :type="TextInputTypes.TEXT"
           :required="true"
-          :error="form.accessToken.error"
+          :error="form.access_token.error"
           label="This token must be provided by the site administrator to gain access."
           placeholder="Access token"
-          @input="(val) => form.accessToken.value = val"
+          v-model="form.access_token.value"
         />
 
         <div class="w-full my-2 border-1 border-zinc-600"></div>
@@ -106,7 +106,7 @@ interface Form {
   last_name: FormValue<string>,
   password: FormValue<string>,
   confirm_password: FormValue<string>,
-  accessToken: FormValue<string>,
+  access_token: FormValue<string>,
 }
 
 const loading: Ref<boolean> = ref(false);
@@ -117,7 +117,7 @@ const form: Ref<Form> = ref({
   last_name: { value: '', error: null },
   password: { value: '', error: null },
   confirm_password: { value: '', error: null },
-  accessToken: { value: '', error: null },
+  access_token: { value: '', error: null },
 });
 
 function registerAccount() {
@@ -127,7 +127,7 @@ function registerAccount() {
   form.value.last_name.error = null;
   form.value.password.error = null;
   form.value.confirm_password.error = null;
-  form.value.accessToken.error = null;
+  form.value.access_token.error = null;
 
   axios.post('/auth/register', {
     email: form.value.email.value,
@@ -135,7 +135,7 @@ function registerAccount() {
     last_name: form.value.last_name.value,
     password: form.value.password.value,
     confirm_password: form.value.confirm_password.value,
-    access_token: form.value.accessToken.value,
+    access_token: form.value.access_token.value,
   }).then(() => router.push({ name: 'login' }))
     .catch((err) => {
       const message: string = err.response.data.message;
@@ -171,7 +171,7 @@ function registerAccount() {
       }
 
       if (message.includes('access_token', 0) || message.includes('access token', 0)) {
-        form.value.accessToken.error = message;
+        form.value.access_token.error = message;
         return;
       }
   })

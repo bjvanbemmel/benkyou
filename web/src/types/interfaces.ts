@@ -12,16 +12,19 @@ export interface User {
 
 export interface Feature {
   id: string,
+  external_id: string,
   user_id: string,
   sprint_id: string,
   state: number,
   title: string,
   description: string,
+  position: number,
   created_at: string,
 }
 
 export interface Requirement {
   id: string,
+  external_id: string,
   user_id: string,
   feature_id: string,
   sprint_id: string,
@@ -29,6 +32,7 @@ export interface Requirement {
   title: string,
   estimate: number,
   description: string,
+  position: number,
   created_at: string,
 }
 

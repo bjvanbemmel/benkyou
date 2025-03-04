@@ -7,11 +7,11 @@ import (
 	"github.com/bjvanbemmel/benkyou/internal/database"
 	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type FeatureRepository struct {
-	conn    *pgx.Conn
+	conn    *pgxpool.Pool
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -30,7 +30,7 @@ func NewFeatureRepository(ctx context.Context) (FeatureRepository, error) {
 }
 
 func (f FeatureRepository) Close() {
-	f.conn.Close(f.ctx)
+	f.conn.Close()
 }
 
 func (f FeatureRepository) Index() ([]data.Feature, error) {
@@ -55,4 +55,18 @@ func (f FeatureRepository) Update(feature data.UpdateFeatureParams) (data.Featur
 
 func (f FeatureRepository) Delete(id uuid.UUID) error {
 	return errors.MapDatabaseError(f.queries.DeleteFeature(f.ctx, id))
+}
+
+func (f FeatureRepository) IncrementPositionForAllFeaturesBetweenAscending(from int32, to int32) error {
+	return f.queries.IncrementPositionForAllFeaturesBetweenAscending(f.ctx, data.IncrementPositionForAllFeaturesBetweenAscendingParams{
+		Position:   from,
+		Position_2: to,
+	})
+}
+
+func (f FeatureRepository) IncrementPositionForAllFeaturesBetweenDescending(from int32, to int32) error {
+	return f.queries.IncrementPositionForAllFeaturesBetweenDescending(f.ctx, data.IncrementPositionForAllFeaturesBetweenDescendingParams{
+		Position:   to,
+		Position_2: from,
+	})
 }

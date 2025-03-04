@@ -7,11 +7,11 @@ import (
 	"github.com/bjvanbemmel/benkyou/internal/database"
 	"github.com/bjvanbemmel/benkyou/internal/errors"
 	"github.com/google/uuid"
-	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 type UserRepository struct {
-	conn    *pgx.Conn
+	conn    *pgxpool.Pool
 	ctx     context.Context
 	queries *data.Queries
 }
@@ -30,7 +30,7 @@ func NewUserRepository(ctx context.Context) (UserRepository, error) {
 }
 
 func (u UserRepository) Close() {
-	u.conn.Close(u.ctx)
+	u.conn.Close()
 }
 
 func (u UserRepository) Index() ([]data.ListUsersRow, error) {

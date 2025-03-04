@@ -133,6 +133,7 @@ type FeatureUpdateRequest struct {
 	State       int32  `json:"state" validate:"number"`
 	Title       string `json:"title" validate:"required,max=255"`
 	Description string `json:"description"`
+	Position    int32  `json:"position" validate:"number"`
 }
 
 // POST /requirements
@@ -142,7 +143,7 @@ type RequirementCreateRequest struct {
 	FeatureID   string `json:"feature_id" validate:"omitempty,uuid"`
 	State       int32  `json:"state" validate:"number"`
 	Title       string `json:"title" validate:"required,max=255"`
-	Estimate    string `json:"estimate" validate:"omitempty,number"`
+	Estimate    int32  `json:"estimate" validate:"omitempty,number"`
 	Description string `json:"description"`
 }
 
@@ -153,7 +154,7 @@ type RequirementUpdateRequest struct {
 	FeatureID   string `json:"feature_id" validate:"omitempty,uuid"`
 	State       int32  `json:"state" validate:"number"`
 	Title       string `json:"title" validate:"required,max=255"`
-	Estimate    string `json:"estimate" validate:"omitempty,number"`
+	Estimate    int32  `json:"estimate" validate:"omitempty,number"`
 	Description string `json:"description"`
 }
 

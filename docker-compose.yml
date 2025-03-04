@@ -32,6 +32,7 @@ services:
       - 127.0.0.1:${POSTGRES_PORT}:5432
     networks:
       - benkyou
+    command: -c 'max_connections=5000'
     volumes:
       - ${PERSISTENT_DATA_DIRECTORY:-.data}:/var/lib/postgresql/data
     env_file: .env
