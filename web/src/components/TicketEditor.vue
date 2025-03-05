@@ -218,6 +218,7 @@
           <div class="col-span-2">
             <FormTextInput
               :type="TextInputTypes.NUMERICAL"
+              :min="0"
               v-model="form.estimate.value"
               placeholder="Estimate"
             />
@@ -357,6 +358,7 @@ onMounted(async () => {
     form.value.state.value = requirement.state;
     form.value.title.value = requirement.title;
     form.value.description.value = requirement.description;
+    form.value.estimate.value = requirement.estimate;
     form.value.position.value = requirement.position;
   }
 })
@@ -512,6 +514,7 @@ function createRequirement(): void {
     feature_id: form.value.feature_id.value,
     state: form.value.state.value,
     title: form.value.title.value,
+    estimate: form.value.estimate.value,
     description: form.value.description.value,
   })
     .then((res) => {

@@ -96,11 +96,7 @@ func WithStatusCode(err error) (int, error) {
 		return http.StatusBadRequest, err
 	}
 
-	if strings.Contains(err.Error(), "must be equal to") {
-		return http.StatusBadRequest, err
-	}
-
-	if strings.Contains(err.Error(), "must be a valid") {
+	if strings.Contains(err.Error(), "must be") {
 		return http.StatusBadRequest, err
 	}
 

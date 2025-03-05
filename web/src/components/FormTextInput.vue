@@ -6,6 +6,8 @@
         :type="exposed ? TextInputTypes.TEXT : props.type"
         :placeholder="props.placeholder"
         :required="props.required"
+        :min="props.min"
+        :max="props.max"
         autocomplete="props.autocomplete"
         class="w-full focus:outline-1 focus:outline-zinc-400 p-2 bg-zinc-700 rounded-md text-sm text-zinc-100 border-1 border-zinc-500"
         :class="{
@@ -72,6 +74,8 @@ const props = withDefaults(defineProps<{
   autocomplete?: string,
   value?: string,
   error?: string | null,
+  min?: number,
+  max?: number,
 }>(), {
     id: () => window.crypto.randomUUID(),
 });
