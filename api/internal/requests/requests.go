@@ -143,7 +143,7 @@ type RequirementCreateRequest struct {
 	FeatureID   string `json:"feature_id" validate:"omitempty,uuid"`
 	State       int32  `json:"state" validate:"number"`
 	Title       string `json:"title" validate:"required,max=255"`
-	Estimate    int32  `json:"estimate" validate:"omitempty,number"`
+	Estimate    int64  `json:"estimate" validate:"omitempty,number,min=1,max=13"`
 	Description string `json:"description"`
 }
 
@@ -154,7 +154,7 @@ type RequirementUpdateRequest struct {
 	FeatureID   string `json:"feature_id" validate:"omitempty,uuid"`
 	State       int32  `json:"state" validate:"number"`
 	Title       string `json:"title" validate:"required,max=255"`
-	Estimate    int32  `json:"estimate" validate:"omitempty,number"`
+	Estimate    int64  `json:"estimate" validate:"omitempty,number,min=1,max=13"`
 	Description string `json:"description"`
 }
 

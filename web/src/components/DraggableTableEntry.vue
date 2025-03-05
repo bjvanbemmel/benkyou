@@ -1,7 +1,7 @@
 <template>
   <div
     ref="el"
-    class="*:flex *:items-center overflow-hidden text-ellipsis h-12 grid grid-cols-20"
+    class="*:flex *:items-center gap-2 overflow-hidden text-ellipsis h-12 grid grid-cols-20"
     :class="customClasses"
     :style="`top: ${verticalCoord}px`"
     @mousedown="(e) => toggleDrag(e, true)"

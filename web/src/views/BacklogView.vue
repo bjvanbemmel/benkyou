@@ -173,7 +173,6 @@
                 :key="i"
                 :draggable="true"
                 class="even:bg-zinc-900/70 odd:bg-zinc-900/90 w-full"
-                @dragging="(v) => console.log(v)"
               >
                 <div></div>
                 <div class="flex gap-1 text-xs col-span-1 text-zinc-500 my-auto">
@@ -308,7 +307,8 @@ async function refreshData(): Promise<void> {
     featureCollapseToggles.value.push(x);
   });
 
-  featureCollapseToggles.value.forEach((x, i) => {
+  // TODO: Delete collapseToggles for feaetures no longer present in the backlog
+  featureCollapseToggles.value.forEach((x) => {
     if (newCollapseToggles.includes(x)) {
       return;
     }

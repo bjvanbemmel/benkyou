@@ -91,6 +91,9 @@ func (c RequirementController) Create(w http.ResponseWriter, r *http.Request) {
 	var featureId pgtype.UUID
 	featureId.Scan(req.FeatureID)
 
+	var estimate pgtype.Int4
+	estimate.Scan(req.Estimate)
+
 	requirement, err := c.requirementRepository.Create(data.CreateRequirementParams{
 		UserID:      userId,
 		SprintID:    sprintId,
@@ -98,6 +101,7 @@ func (c RequirementController) Create(w http.ResponseWriter, r *http.Request) {
 		State:       req.State,
 		Title:       req.Title,
 		Description: req.Description,
+		Estimate:    estimate,
 	})
 	if err != nil {
 		response.NewError(w, err)
@@ -146,6 +150,9 @@ func (c RequirementController) Update(w http.ResponseWriter, r *http.Request) {
 	var featureId pgtype.UUID
 	featureId.Scan(req.FeatureID)
 
+	var estimate pgtype.Int4
+	estimate.Scan(req.Estimate)
+
 	requirement, err := c.requirementRepository.Update(data.UpdateRequirementParams{
 		ID:          id,
 		UserID:      userId,
@@ -154,6 +161,7 @@ func (c RequirementController) Update(w http.ResponseWriter, r *http.Request) {
 		State:       req.State,
 		Title:       req.Title,
 		Description: req.Description,
+		Estimate:    estimate,
 	})
 	if err != nil {
 		response.NewError(w, err)
