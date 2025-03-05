@@ -211,7 +211,13 @@
                   }"
                 >{{ translateState(requirement.state) }}</div>
                 <div class="col-span-9 overflow-hidden text-ellipsis line-clamp-1">{{ requirement.title }}</div>
-                <div class="col-span-1">{{ requirement.estimate }}</div>
+                <div class="col-span-1">
+                  <span v-if="requirement.estimate">
+                    {{ requirement.estimate }}
+                  </span>
+                  <span v-else>
+                  </span>
+                </div>
                 <div class="col-span-2 pr-2 flex items-center justify-end gap-2">
                   <FormButton
                     :type="ButtonTypes.SECONDARY"
@@ -293,7 +299,8 @@ async function refreshData(): Promise<void> {
   features.value = featuresResponse.data.data.sort((a, b) => a.position - b.position);
 
   const requirementsResponse = await axios.get<Response<Requirement[]>>('/requirements');
-  requirements.value = requirementsResponse.data.data;
+  // Temporary sorting solution. Should make use of position (or derivative) once this has been implemented at the requirement level.
+  requirements.value = requirementsResponse.data.data.sort((a, b) => new Date(a.created_at).getMilliseconds() - new Date(b.created_at).getMilliseconds());
 
   const usersResponse = await axios.get<Response<User[]>>('/users');
   users.value = usersResponse.data.data;
