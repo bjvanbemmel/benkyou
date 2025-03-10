@@ -77,9 +77,13 @@
               :key="i"
             >
               <DraggableTableEntry
+                :id="i"
                 :draggable="true"
+                :sibling-coords="draggableCoordinates"
+                :sibling-being-dragged="draggableBeingDragged"
                 class="group-even:bg-zinc-900/30 w-full"
-                @dragging="(v) => disableCollapseIfEnabled(v, feature.id)"
+                @coordinates="(v) => draggableCoordinates = v"
+                @dragging="(v) => handleDragging(v, feature.id)"
               >
                 <div class="pl-2">
                   <FormButton
@@ -171,7 +175,12 @@
                 v-if="featureCollapseToggles.find(x => x.id === feature.id)?.enabled"
                 v-for="requirement, i in requirements.filter(x => x.feature_id === feature.id)"
                 :key="i"
-                :draggable="true"
+                :id="i"
+                :draggable="false"
+                :sibling-coords="draggableCoordinates"
+                :sibling-being-dragged="draggableBeingDragged"
+                @coordinates="(v) => draggableCoordinates = v"
+                @dragging="(v) => handleDragging(v, requirement.id)"
                 class="even:bg-zinc-900/70 odd:bg-zinc-900/90 w-full"
               >
                 <div></div>
@@ -275,6 +284,9 @@ const editorIsUpdating: Ref<boolean> = ref(false);
 const features: Ref<Feature[]> = ref([]);
 const requirements: Ref<Requirement[]> = ref([]);
 const users: Ref<User[]> = ref([]);
+
+const draggableCoordinates: Ref<number> = ref(0);
+const draggableBeingDragged: Ref<number> = ref(-1);
 
 const featureCollapseToggles: Ref<{ id: string, enabled: boolean }[]> = ref(
   JSON.parse(window.localStorage.getItem('backlog_feature_collapse_toggles') ?? '[]') ?? []
@@ -411,8 +423,13 @@ function editorExit(): void {
   router.replace({ query: {} });
 }
 
-function disableCollapseIfEnabled(dragging: boolean, featureId: string): void {
-  if (!dragging) return;
+function handleDragging(dragging: number, featureId: string): void {
+  draggableBeingDragged.value = dragging;
+  disableCollapseIfEnabled(dragging, featureId);
+}
+
+function disableCollapseIfEnabled(dragging: number, featureId: string): void {
+  if (dragging === -1) return;
 
   const toggle = featureCollapseToggles.value.find(x => x.id === featureId);
   if (typeof toggle === 'undefined') return;
